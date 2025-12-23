@@ -30,7 +30,7 @@ In a dynamic flood disaster scenario, a multi-agent team must cooperatively gath
 | ------------------ | -------------------------------------------- | ------------- |
 | `n_rescuers`       | Number of rescue agents                      | 5             |
 | `n_supplies`       | Number of valuable supply items              | 10            |
-| `n_hazards`        | Number of hazard items                       | 10            |
+| `n_hazards`        | Number of hazard items                       | 5            |
 | `n_coop`           | Agents required for successful cooperation   | 2             |
 | `n_sensors`        | Number of sensors per agent                  | 30            |
 | `sensor_range`     | Maximum sensing range                        | 500.0         |

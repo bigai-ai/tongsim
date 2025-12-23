@@ -40,8 +40,8 @@ The following table shows the performance comparison of different baseline algor
 | Method | Average Reward per Step | Average Reward |
 |--------|-------------------------|----------------|
 | MAPPO  | 0.038                   | 19.24          |
-| IPPO   | 0.022                  | 11.10          |
-| Random | 0.009                   | 4.601          |
+| IPPO   | 0.030                  | 14.75         |
+| Random | -0.003                   | -1.38          |
 
 
 ### Evaluating a Pre-trained Model
