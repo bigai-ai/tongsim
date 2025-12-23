@@ -1,0 +1,248 @@
+﻿syntax = "proto3";
+package tongsim_lite.demo_rl;
+
+import "tongsim_lite_protobuf/common.proto";
+import "tongsim_lite_protobuf/object.proto";
+
+service DemoRLService {
+  rpc ResetLevel(tongsim_lite.common.Empty) returns (tongsim_lite.common.Empty);
+  rpc QueryState(tongsim_lite.common.Empty) returns (DemoRLState);
+  rpc SimpleMoveTowards(SimpleMoveTowardsRequest) returns (SimpleMoveTowardsResponse);
+
+  rpc SetActorTransform (SetActorTransformRequest) returns (tongsim_lite.common.Empty);
+  rpc GetActorTransform (GetActorTransformRequest) returns (GetActorTransformResponse);
+
+  rpc GetActorState (GetActorStateRequest) returns (GetActorStateResponse);
+  rpc SpawnActor (SpawnActorRequest) returns (SpawnActorResponse);
+
+
+  rpc ExecConsoleCommand(ExecConsoleCommandRequest) returns (ExecConsoleCommandResponse);
+  rpc QueryNavigationPath(QueryNavigationPathRequest) returns (QueryNavigationPathResponse);
+  rpc NavigateToLocation(NavigateToLocationRequest) returns (NavigateToLocationResponse);
+
+  rpc PickUpObject(PickUpObjectRequest) returns (PickUpObjectResponse);
+  rpc DropObject(DropObjectRequest) returns (DropObjectResponse);
+
+  rpc DestroyActor (DestroyActorRequest) returns (tongsim_lite.common.Empty);
+
+  rpc BatchSingleLineTraceByObject(BatchSingleLineTraceByObjectRequest)
+      returns (BatchSingleLineTraceByObjectResponse);
+
+  rpc BatchMultiLineTraceByObject(BatchMultiLineTraceByObjectRequest)
+    returns (BatchMultiLineTraceByObjectResponse);
+}
+
+message ActorState{
+    tongsim_lite.object.ObjectInfo object_info = 1;
+    tongsim_lite.common.Vector3f location = 2;
+    tongsim_lite.common.Vector3f unit_forward_vector = 3;
+    tongsim_lite.common.Vector3f unit_right_vector = 4;
+    tongsim_lite.common.Box bounding_box = 5;
+    string tag = 6;
+    float current_speed = 7;
+    bool destroyed = 16;
+}
+
+message DemoRLState{
+    repeated ActorState actor_states= 1;
+}
+
+enum OrientationMode {
+  ORIENTATION_KEEP_CURRENT  = 0;
+  ORIENTATION_FACE_MOVEMENT = 1;
+  ORIENTATION_GIVEN = 2;
+}
+
+enum HandType {
+  HAND_RIGHT = 0;
+  HAND_LEFT = 1;
+}
+
+message SimpleMoveTowardsRequest{
+    tongsim_lite.common.Vector3f target_location = 1;
+    OrientationMode orientation_mode = 2;
+    optional tongsim_lite.common.Vector3f given_orientation = 3;
+    tongsim_lite.object.ObjectId actor_id = 10;
+    optional float speed_uu_per_sec = 11;
+    optional float tolerance_uu = 12;
+}
+
+message HitResult{
+   ActorState hit_actor = 1;
+}
+
+message SimpleMoveTowardsResponse{
+    tongsim_lite.common.Vector3f current_location = 1;
+    optional HitResult hit_result = 2;
+}
+
+message GetActorStateRequest {
+    tongsim_lite.object.ObjectId actor_id = 1;
+}
+
+message GetActorStateResponse {
+  ActorState actor_state = 1;
+}
+
+message SetActorTransformRequest {
+  tongsim_lite.object.ObjectId actor_id = 1;
+  tongsim_lite.common.Transform transform = 2;
+}
+
+message GetActorTransformRequest {
+  tongsim_lite.object.ObjectId actor_id = 1;
+}
+
+message GetActorTransformResponse {
+  tongsim_lite.common.Transform transform = 1;
+}
+
+message SpawnActorRequest {
+  string blueprint = 1;
+  tongsim_lite.common.Transform transform = 2;
+  optional string name = 3;
+  repeated string tags = 4;
+}
+
+message SpawnActorResponse {
+  tongsim_lite.object.ObjectInfo actor = 1;
+}
+
+// ===== Exec Console Command =====
+message ExecConsoleCommandRequest {
+  // 需要执行的控制台命令（例如 "stat fps"、"r.Streaming.PoolSize 4000"、"open MapName?listen" 等）
+  string command = 1;
+
+  // 是否写入日志（对应 UE 的 bWriteToLog）
+  bool write_to_log = 2; // default: true
+}
+
+message ExecConsoleCommandResponse {
+  bool success = 1;   // 是否提交成功（无法获取控制台“输出文本”，仅标记是否投递成功）
+  string message = 2; // 可用于回显命令或错误原因
+}
+
+// ===== Query Navigation Path =====
+message QueryNavigationPathRequest {
+  tongsim_lite.common.Vector3f start = 1; // 起点
+  tongsim_lite.common.Vector3f end   = 2; // 终点
+
+  // 允许部分路径（UE: AllowPartialPaths）。若为 true，找不到完整路径时返回到可达处的路径。
+  bool allow_partial = 3; // default: true
+
+  // 终点是否必须在可导航区域（若为 true，终点投影失败则直接返回 NOT_FOUND）
+  bool require_navigable_end_location = 4; // default: false
+
+  // 花费上限（CostLimit）。>0 生效；<=0 不设上限。
+  float cost_limit = 5; // default: 0.0 (不开启限制)
+}
+
+message QueryNavigationPathResponse {
+  repeated tongsim_lite.common.Vector3f path_points = 1; // 路径关键点（含起终点）
+  bool  is_partial   = 2; // 返回路径是否为部分路径
+  float path_cost    = 3; // 引擎计算的“代价”（若可得）
+  float path_length  = 4; // 实际几何长度（逐段相加）
+}
+
+// ===== Navigate To Location (NavMesh) =====
+message NavigateToLocationRequest {
+  tongsim_lite.object.ObjectId actor_id = 1;
+  tongsim_lite.common.Vector3f target_location = 2;
+  float accept_radius = 3;
+  bool allow_partial = 4;
+  optional float speed_uu_per_sec = 5;
+}
+
+message NavigateToLocationResponse {
+  bool success = 1;
+  string message = 2;
+  tongsim_lite.common.Vector3f final_location = 3;
+  bool is_partial = 4;
+}
+
+// ===== Pick/Drop Object (placeholder) =====
+message PickUpObjectRequest {
+  tongsim_lite.object.ObjectId actor_id = 1;
+  HandType hand = 2;
+  tongsim_lite.common.Vector3f target_object_location = 3;
+  // 需要抓取的目标物体（Actor）的 ObjectId；由 gRPC 调用方显式传入，不在 UE 侧按距离查找。
+  tongsim_lite.object.ObjectId target_object_id = 4;
+}
+
+message PickUpObjectResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message DropObjectRequest {
+  tongsim_lite.object.ObjectId actor_id = 1;
+  HandType hand = 2;
+  tongsim_lite.common.Vector3f target_drop_location = 3;
+  bool enable_physics = 4;
+}
+
+message DropObjectResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message DestroyActorRequest {
+  tongsim_lite.object.ObjectId actor_id = 1;
+  bool force = 2;
+}
+
+enum CollisionObjectType {
+  OBJECT_WORLD_STATIC  = 0;
+  OBJECT_WORLD_DYNAMIC = 1;
+  OBJECT_PAWN          = 2;
+  OBJECT_PHYSICS_BODY  = 3;
+  OBJECT_VEHICLE       = 4;
+  OBJECT_DESTRUCTIBLE  = 5;
+}
+
+message LineTraceByObjectJob {
+  tongsim_lite.common.Vector3f start = 1;
+  tongsim_lite.common.Vector3f end   = 2;
+
+  repeated CollisionObjectType object_types = 3; // 至少一个
+  optional bool trace_complex = 4;               // 默认 false
+
+  repeated tongsim_lite.object.ObjectId actors_to_ignore = 10;
+}
+
+message BatchSingleLineTraceByObjectRequest {
+  repeated LineTraceByObjectJob jobs = 1;   // 一次提交多条线（server 端有硬上限）
+}
+
+message SingleLineTraceByObjectResult {
+  uint32 job_index = 1; // 与请求序号一一对应
+  bool blocking_hit = 2; // 是否有“阻挡”命中
+  float distance    = 3; // start->impact 的距离（无命中则置 0）
+  tongsim_lite.common.Vector3f impact_point = 4; // 无命中可置为 (0,0,0)
+  optional ActorState actor_state = 10; // 无命中不返回
+}
+
+message BatchSingleLineTraceByObjectResponse {
+  repeated SingleLineTraceByObjectResult results = 1; // 与请求 jobs 顺序对齐
+}
+
+message BatchMultiLineTraceByObjectRequest {
+  repeated LineTraceByObjectJob jobs = 1;
+  bool enable_debug_draw = 2;
+}
+
+message MultiLineTraceHit {
+  float distance = 1;                       // 从 start 到命中的距离（UU）
+  tongsim_lite.common.Vector3f impact_point = 2;
+  ActorState actor_state = 3;               // 命中 Actor 的状态（若可取到 GUID）
+  tongsim_lite.common.Vector3f impact_normal = 4;
+}
+
+message MultiLineTraceResult {
+  int32 job_index = 1;                      // 对应请求中的 job 索引
+  repeated MultiLineTraceHit hits = 2;      // 已按距离升序，仅保留 blocking
+}
+
+message BatchMultiLineTraceByObjectResponse {
+  repeated MultiLineTraceResult results = 1;
+}

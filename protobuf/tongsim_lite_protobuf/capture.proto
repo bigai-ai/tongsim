@@ -1,0 +1,183 @@
+syntax = "proto3";
+
+package tongsim_lite.capture;
+
+import "tongsim_lite_protobuf/common.proto";
+import "tongsim_lite_protobuf/object.proto";
+
+// Color capture source matches Unreal's ESceneCaptureSource values.
+enum CaptureColorSource {
+  COLOR_SOURCE_SCENE_COLOR_HDR = 0;
+  COLOR_SOURCE_SCENE_COLOR_HDR_NO_ALPHA = 1;
+  COLOR_SOURCE_FINAL_COLOR_LDR = 2;
+  COLOR_SOURCE_SCENE_COLOR_SCENE_DEPTH = 3;
+  COLOR_SOURCE_SCENE_DEPTH = 4;
+  COLOR_SOURCE_DEVICE_DEPTH = 5;
+  COLOR_SOURCE_NORMAL = 6;
+  COLOR_SOURCE_BASE_COLOR = 7;
+  COLOR_SOURCE_FINAL_COLOR_HDR = 8;
+  COLOR_SOURCE_FINAL_TONE_CURVE_HDR = 9;
+}
+
+// Render target format mirrors Unreal's ETextureRenderTargetFormat values.
+enum CaptureRenderTargetFormat {
+  COLOR_FORMAT_R8 = 0;
+  COLOR_FORMAT_RG8 = 1;
+  COLOR_FORMAT_RGBA8 = 2;
+  COLOR_FORMAT_RGBA8_SRGB = 3;
+  COLOR_FORMAT_R16F = 4;
+  COLOR_FORMAT_RG16F = 5;
+  COLOR_FORMAT_RGBA16F = 6;
+  COLOR_FORMAT_R32F = 7;
+  COLOR_FORMAT_RG32F = 8;
+  COLOR_FORMAT_RGBA32F = 9;
+  COLOR_FORMAT_RGB10A2 = 10;
+}
+
+// Depth encoding mode mirrors TongSim's ETSCaptureDepthMode values.
+enum CaptureDepthMode {
+  CAPTURE_DEPTH_NONE = 0;
+  CAPTURE_DEPTH_LINEAR = 1;
+  CAPTURE_DEPTH_DEVICE_Z = 2;
+  CAPTURE_DEPTH_VIEW_SPACE_Z = 3;
+  CAPTURE_DEPTH_NORMALIZED_01 = 4;
+}
+
+enum CaptureRgbCodec {
+  CAPTURE_RGB_CODEC_NONE = 0;
+  CAPTURE_RGB_CODEC_JPEG = 1;
+}
+
+enum CaptureDepthCodec {
+  CAPTURE_DEPTH_CODEC_NONE = 0;
+  CAPTURE_DEPTH_CODEC_EXR = 1;
+}
+
+message CaptureCameraParams {
+  int32 width = 1;
+  int32 height = 2;
+  float fov_degrees = 3;
+  float qps = 4;
+  bool enable_depth = 5;
+  CaptureColorSource color_source = 6;
+  CaptureRenderTargetFormat color_format = 7;
+  bool enable_post_process = 8;
+  bool enable_temporal_aa = 9;
+  float depth_near = 10;
+  float depth_far = 11;
+  CaptureDepthMode depth_mode = 12;
+  CaptureRgbCodec rgb_codec = 13;
+  CaptureDepthCodec depth_codec = 14;
+  int32 jpeg_quality = 15;
+}
+
+message CaptureCameraStatus {
+  bool capturing = 1;
+  int32 queue_count = 2;
+  int32 compressed_queue_count = 3;
+  int32 width = 4;
+  int32 height = 5;
+  float fov_degrees = 6;
+  CaptureDepthMode depth_mode = 7;
+}
+
+message CameraIntrinsics {
+  float fx = 1;
+  float fy = 2;
+  float cx = 3;
+  float cy = 4;
+}
+
+message CaptureFrame {
+  tongsim_lite.object.ObjectId camera_id = 1;
+  uint64 frame_id = 2;
+  double game_time_seconds = 3;
+  double gpu_ready_timestamp = 4;
+  int32 width = 5;
+  int32 height = 6;
+  tongsim_lite.common.Transform world_pose = 7;
+  CameraIntrinsics intrinsics = 8;
+  bytes rgba8 = 9;
+  bytes depth_r32 = 10;
+  float depth_near = 11;
+  float depth_far = 12;
+  CaptureDepthMode depth_mode = 13;
+  bool has_color = 14;
+  bool has_depth = 15;
+}
+
+message CaptureCameraDescriptor {
+  tongsim_lite.object.ObjectInfo camera = 1;
+  CaptureCameraParams params = 2;
+  CaptureCameraStatus status = 3;
+}
+
+message ListCaptureCamerasRequest {}
+message ListCaptureCamerasResponse {
+  repeated CaptureCameraDescriptor cameras = 1;
+}
+
+message CreateCaptureCameraRequest {
+  string capture_name = 1;
+  tongsim_lite.common.Transform world_transform = 2;
+  CaptureCameraParams params = 3;
+  tongsim_lite.object.ObjectId attach_parent = 4;
+  string attach_socket = 5;
+  bool keep_world = 6;
+}
+
+message CreateCaptureCameraResponse {
+  tongsim_lite.object.ObjectInfo camera = 1;
+}
+
+message DestroyCaptureCameraRequest {
+  tongsim_lite.object.ObjectId camera_id = 1;
+  bool force_stop_capture = 2;
+}
+
+message SetCaptureCameraPoseRequest {
+  tongsim_lite.object.ObjectId camera_id = 1;
+  tongsim_lite.common.Transform world_transform = 2;
+}
+
+message UpdateCaptureCameraParamsRequest {
+  tongsim_lite.object.ObjectId camera_id = 1;
+  CaptureCameraParams params = 2;
+}
+
+message UpdateCaptureCameraParamsResponse {
+  CaptureCameraParams applied_params = 1;
+}
+
+message AttachCaptureCameraRequest {
+  tongsim_lite.object.ObjectId camera_id = 1;
+  tongsim_lite.object.ObjectId parent_actor_id = 2;
+  string socket_name = 3;
+  bool keep_world = 4;
+}
+
+message CaptureSnapshotRequest {
+  tongsim_lite.object.ObjectId camera_id = 1;
+  float timeout_seconds = 2;
+  bool include_color = 3;
+  bool include_depth = 4;
+}
+
+message GetCaptureStatusRequest {
+  tongsim_lite.object.ObjectId camera_id = 1;
+}
+
+message GetCaptureStatusResponse {
+  CaptureCameraStatus status = 1;
+}
+
+service CaptureService {
+  rpc ListCaptureCameras(ListCaptureCamerasRequest) returns (ListCaptureCamerasResponse);
+  rpc CreateCaptureCamera(CreateCaptureCameraRequest) returns (CreateCaptureCameraResponse);
+  rpc DestroyCaptureCamera(DestroyCaptureCameraRequest) returns (tongsim_lite.common.Empty);
+  rpc SetCaptureCameraPose(SetCaptureCameraPoseRequest) returns (tongsim_lite.common.Empty);
+  rpc UpdateCaptureCameraParams(UpdateCaptureCameraParamsRequest) returns (UpdateCaptureCameraParamsResponse);
+  rpc AttachCaptureCamera(AttachCaptureCameraRequest) returns (tongsim_lite.common.Empty);
+  rpc CaptureSnapshot(CaptureSnapshotRequest) returns (CaptureFrame);
+  rpc GetCaptureStatus(GetCaptureStatusRequest) returns (GetCaptureStatusResponse);
+}

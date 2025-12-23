@@ -1,0 +1,31 @@
+﻿syntax = "proto3";
+package tongsim_lite.common;
+
+message Empty
+{
+}
+
+message Vector3f
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message Rotatorf {
+    float roll_deg  = 1;  // 绕前轴（+X）旋转
+    float pitch_deg = 2;  // 绕右轴（+Y）旋转
+    float yaw_deg   = 3;  // 绕上轴（+Z）旋转
+}
+
+message Transform {
+    Vector3f location = 1;  // 坐标
+    Rotatorf rotation = 2;  // 欧拉角（度）
+    Vector3f scale = 3;
+}
+
+message Box
+{
+    Vector3f min_vertex = 1;
+    Vector3f max_vertex = 2;
+}

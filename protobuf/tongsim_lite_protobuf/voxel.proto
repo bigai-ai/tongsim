@@ -1,0 +1,22 @@
+﻿syntax = "proto3";
+package tongsim_lite.voxel;
+
+import "tongsim_lite_protobuf/common.proto";
+import "tongsim_lite_protobuf/object.proto";
+
+service VoxelService {
+  rpc QueryVoxel(QueryVoxelRequest) returns (Voxel);
+}
+
+message QueryVoxelRequest{
+  tongsim_lite.common.Transform transform = 1;
+  int32 voxel_num_x = 2;
+  int32 voxel_num_y = 3;
+  int32 voxel_num_z = 4;
+  tongsim_lite.common.Vector3f extent = 5;
+  repeated tongsim_lite.object.ObjectId ActorsToIgnore = 6;
+}
+
+message Voxel{
+  bytes voxel_buffer = 1;
+}

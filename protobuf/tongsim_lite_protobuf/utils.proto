@@ -1,0 +1,12 @@
+﻿syntax = "proto3";
+package tongsim_lite.utils;
+
+import "tongsim_lite_protobuf/common.proto";
+
+service UtilsService {
+  rpc ExecConsoleCommand(ConsoleCommand) returns (tongsim_lite.common.Empty);
+}
+
+message ConsoleCommand{
+    string console_command = 1;
+}

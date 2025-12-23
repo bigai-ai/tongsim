@@ -1,0 +1,70 @@
+agent: "IPPO"  # The agent name.
+env_name: "parralle_UeMACSR"  # The environment name.
+env_id: "MACSR"  # The environment id.
+env_seed: 1  # The random seed of the environment.
+continuous_action: True  # If to use continuous control.
+learner: "IPPO_Learner" #这里定义了更新的地方
+policy: "Gaussian_MAAC_Policy"  # The policy name.Gaussian 表示策略输出一个高斯分布的均值和方差
+representation: "Basic_MLP"  # The representation name.
+vectorize: "TongSimVecMultiAgentEnv"  # The method to vectorize your environment such that can run in parallel.
+runner: "MARL"  # The runner.#执行器是协调数据收集和训练过程的模块。它负责在环境中执行策略、收集经验（transitions），然后将数据发送给学习器进行训练。 这里和多线程有关
+
+# recurrent settings for Basic_RNN representation.
+use_rnn: False  # If to use recurrent neural network as representation. (The representation should be "Basic_RNN").
+rnn: "GRU"  # The type of recurrent layer.
+fc_hidden_sizes: [128, 128, 64]  # The hidden size of feed forward layer in RNN representation.
+recurrent_hidden_size: 64  # The hidden size of the recurrent layer.
+N_recurrent_layers: 1  # The number of recurrent layer.
+dropout: 0  # dropout should be a number in range [0, 1], the probability of an element being zeroed.
+normalize: "LayerNorm"  # Layer normalization.
+initialize: "orthogonal"  # Network initializer.
+gain: 0.01
+render: False
+# render_mode: 'rgb_array' # Choices: 'human', 'rgb_array'.
+render_mode: 'UE'
+UE: True  # If to use TongSim environment.
+
+representation_hidden_size: [128, ]  # A list of hidden units for each layer of Basic_MLP representation networks.
+actor_hidden_size: [128, ]  # A list of hidden units for each layer of actor network.
+critic_hidden_size: [128, ]  # A list of hidden units for each layer of critic network.
+activation: "relu"  # The activation function of each hidden layer.
+activation_action: "tanh"  # The activation function for the last layer of the actor.这通常意味着环境的连续动作空间被归一化到了这个范围。如果动作范围是 (-1, 1)，则通常使用 tanh。
+use_parameter_sharing: True  # If to use parameter sharing for all agents' policies.
+use_actions_mask: False  # If to use actions mask for unavailable actions.
+
+seed: 1  # Random seed.
+parallels: 1  # The number of environments to run in parallel.
+buffer_size: 32  # Number of the transitions (use_rnn is False), or the episodes (use_rnn is True) in replay buffer.训练轮数。在收集了 buffer_size 的数据后，对这些数据进行训练的轮数。1 表示数据只被使用一次。增加此值可以提高数据利用率，但可能导致对当前批次数据过拟合。
+n_epochs: 2  # Number of epochs to train.
+n_minibatch: 10  # Number of minibatch to sample and train.  batch_size = buffer_size // n_minibatch.
+learning_rate: 0.00034  # Learning rate.
+weight_decay: 0  # The steps to decay the greedy epsilon.
+
+vf_coef: 0.75  # Coefficient factor for critic loss.
+ent_coef: 0.05  # Coefficient factor for entropy loss.
+target_kl: 0.25  # For MAPPO_KL learner.
+clip_range: 0.2  # Ratio clip range, for MAPPO_Clip learner.
+clip_type: 1  # Gradient clip for Mindspore: 0: ms.ops.clip_by_value; 1: ms.nn.ClipByNorm().
+gamma: 0.95  # Discount factor.
+
+# tricks
+use_linear_lr_decay: True  # If to use linear learning rate decay.#学习率将不再是一个固定的值。它会从初始值 0.0007 开始，随着训练的进行（从第1步到 running_steps 这一步），线性地、平滑地下降。
+end_factor_lr_decay: 0.3  # The end factor for learning rate scheduler.#学习率下降的终点
+use_global_state: False  # If to use global state to replace merged observations.# Critic 是否能接收到一个包含所有智能体信息的全局状态。
+use_value_clip: True  # Limit the value range.#是否对价值函数的目标值进行裁剪。这可以防止由于奖励的剧烈波动导致价值目标变化过大，从而稳定 Critic 的训练。
+value_clip_range: 0.2  # The value clip range.#V_clipped_target = clip(V_target, V_old - value_clip_range, V_old + value_clip_range)
+use_value_norm: True  # Use running mean and std to normalize rewards.
+use_huber_loss: True  # True: use huber loss; False: use MSE loss.#是否对 Critic 损失使用 Huber Loss。Huber Loss 结合了 MSE 和 MAE 的优点，对异常值不那么敏感，比纯 MSE 更鲁棒。
+huber_delta: 10.0  # The threshold at which to change between delta-scaled L1 and L2 loss. (For huber loss).
+use_advnorm: True  # If to use advantage normalization.
+use_gae: True  # Use GAE trick.
+gae_lambda: 0.95  # The GAE lambda.
+use_grad_clip: True  # Gradient normalization.
+grad_clip_norm: 4.0 # The max norm of the gradient.
+
+running_steps: 2000000  # The total running steps.  #训练200万步
+eval_interval: 100000  # The interval between every two trainings.
+test_episode: 12  # The episodes to test in each test period.
+
+log_dir: "./logs/ippo/"
+model_dir: "./models/ippo/"

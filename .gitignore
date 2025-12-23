@@ -1,0 +1,62 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+.eggs/
+logs/
+wheels/
+share/python-wheels/
+*.egg-info/
+*.egg
+MANIFEST
+
+# PyCharm
+.idea
+
+# vscode
+.vscode/
+*.code-workspace
+
+# Docs
+tongsim-site
+public/
+
+# Tooling caches
+.cache/
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# Python gRPC generated package
+src/tongsim_lite_protobuf/**
+!src/tongsim_lite_protobuf/.gitkeep
+
+
+# TODO(@yangxueyan)
+[Oo]bj/
+models/
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+*.suo
+*.pb.*
+*.sln
+*.vsconfig
+all.proto.desc

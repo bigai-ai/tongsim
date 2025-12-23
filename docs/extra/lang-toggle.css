@@ -1,0 +1,16 @@
+.md-typeset .tabbed-set > label {
+  border: 1px solid var(--md-accent-fg-color);
+  border-radius: 9999px;
+  margin-right: 0.4rem;
+  padding: 0.25rem 0.9rem;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.md-typeset .tabbed-set > input:checked + label {
+  background-color: var(--md-accent-fg-color);
+  color: var(--md-accent-bg-color);
+}
+
+.md-typeset .tabbed-set > label:hover {
+  background-color: rgba(var(--md-accent-fg-color--rgb), 0.08);
+}

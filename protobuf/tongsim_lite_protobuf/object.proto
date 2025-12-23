@@ -1,0 +1,15 @@
+syntax = "proto3";
+package tongsim_lite.object;
+
+// 统一对象标识（单进程域内唯一）
+message ObjectId
+{
+    bytes guid = 1;
+}
+
+// 统一的对象信息（对所有 UObject 通用）
+message ObjectInfo {
+  ObjectId id = 1; // GUID
+  string class_path = 2;     // 类路径（/Script/... 或 /Game/Blueprints/BP_X.BP_X_C）
+  string name = 3;           // 对象名
+}

@@ -1,0 +1,4 @@
+# Manage large UE assets via Git LFS
+unreal/Content/**/*.uasset filter=lfs diff=lfs merge=lfs -text
+unreal/Content/**/*.umap   filter=lfs diff=lfs merge=lfs -text
+unreal/RawContent/**       filter=lfs diff=lfs merge=lfs -text

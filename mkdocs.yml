@@ -1,0 +1,153 @@
+site_name: TongSIM
+site_description: TongSIM AI Simulation Platform (UE 5.6)
+site_url: https://bigai-ai.github.io/tongsim/
+repo_url: https://github.com/bigai-ai/tongsim
+repo_name: bigai-ai/tongsim
+site_dir: public
+copyright: Copyright &copy; 2025 BIGAI
+
+theme:
+  name: material
+  language: en
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: red
+      accent: pink
+      toggle:
+        icon: material/lightbulb-outline
+        name: "Switch to dark mode"
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: pink
+      toggle:
+        icon: material/lightbulb
+        name: "Switch to system preference"
+  features:
+    - content.tabs.link
+    - content.code.annotate
+    - content.code.copy
+    - navigation.tabs
+    - navigation.path
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - search.suggest
+    - toc.follow
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+extra:
+  social:
+    - icon: fontawesome/solid/house
+      link: https://tongsim-platform.github.io/tongsim
+      name: Homepage
+    - icon: fontawesome/solid/book
+      link: https://bigai-ai.github.io/tongsim/
+      name: Documentation
+    - icon: simple/huggingface
+      link: https://huggingface.co/datasets/bigai/TongSIM-Asset
+      name: TongSIM-Asset (Hugging Face)
+    - icon: fontawesome/brands/github
+      link: https://github.com/bigai-ai/tongsim
+      name: GitHub
+
+extra_css:
+  - extra/terminal.css
+  - extra/tweaks.css
+  - extra/lang-toggle.css
+
+markdown_extensions:
+  - tables
+  - toc:
+      permalink: true
+      title: Page contents
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      pygments_lang_class: true
+  - pymdownx.extra
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.tabbed:
+      alternate_style: true
+
+plugins:
+  - search
+  - autorefs:
+      resolve_closest: true
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: ["src"]
+          options:
+            members_order: source
+            separate_signature: true
+            filters: ["!^_"]
+            docstring_options:
+              ignore_init_summary: true
+            merge_init_into_class: false
+            show_signature_annotations: true
+            signature_crossrefs: true
+            group_by_category: true
+            show_source: true
+            show_root_heading: true
+            show_docstring_modules: false
+  - i18n:
+      languages:
+        - locale: en
+          name: English
+          default: true
+          build: true
+        - locale: zh
+          name: 简体中文
+          build: true
+
+nav:
+  - Home:
+      - Overview: index.md
+      - Quickstart:
+          - Environment Setup: quickstart/environment.md
+          - First Simulation: quickstart/first_simulation.md
+          - How TongSIM Works: quickstart/client_server.md
+  - Tutorial:
+    - Single-agent RL Navigation:
+      - Task Overview: tutorial/single_agent_nav/task_overview.md
+      - Quick Start: tutorial/single_agent_nav/quick_start.md
+      - Training: tutorial/single_agent_nav/training.md
+    - Multi-agent RL Navigation:
+      - Task Overview: tutorial/multi_agent_nav/task_overview.md
+      - Quick Start: tutorial/multi_agent_nav/quick_start.md
+      - Training: tutorial/multi_agent_nav/training.md
+  - Guides:
+      - Asset & Scene Pipeline: guides/asset_pipeline.md
+      - Multi-level System: guides/multilevel.md
+      - Voxel Perception Pipeline: guides/voxel_perception.md
+      - TongSim Capture: guides/capture.md
+      - ControlRig Procedural Animation: guides/procedural_animation.md
+      - UE Packaging & Deployment: guides/ue_packaging.md
+  - Architecture:
+      - System Overview: architecture/platform_overview.md
+      - Unreal Server: architecture/server.md
+      - Python Client: architecture/client.md
+      - Data Flow: architecture/data_flow.md
+  - API Documentation:
+      - Overview: api/index.md
+      - Runtime: api/runtime.md
+      - Math Types: api/math.md
+      - gRPC Connection: api/grpc.md
+      - Core Control: api/demorl.md
+      - Arena: api/arena.md
+      - Capture: api/capture.md
+      - Voxel: api/voxel.md

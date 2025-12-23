@@ -1,0 +1,104 @@
+syntax = "proto3";
+package tongsim_lite.arena;
+
+import "tongsim_lite_protobuf/common.proto";
+import "tongsim_lite_protobuf/object.proto";
+
+message LoadArenaRequest {
+  string level_asset_path = 1;
+  tongsim_lite.common.Transform anchor = 2;        // 世界锚点（位置/旋转/缩放）
+  bool make_visible = 3;                           // 初始可见
+}
+message LoadArenaResponse {
+  tongsim_lite.object.ObjectId arena_id = 1;       // FGuid(LE, 16 bytes)
+}
+
+message DestroyArenaRequest { tongsim_lite.object.ObjectId arena_id = 1; }
+message ResetArenaRequest   { tongsim_lite.object.ObjectId arena_id = 1; }
+message SetArenaVisibleRequest {
+  tongsim_lite.object.ObjectId arena_id = 1;
+  bool visible = 2;
+}
+
+message ArenaDescriptor {
+  tongsim_lite.object.ObjectId arena_id = 1;
+  string asset_path = 2;
+  tongsim_lite.common.Transform anchor = 3;
+  bool is_loaded = 4;
+  bool is_visible = 5;
+  int32 num_actors = 6;
+}
+message ListArenasRequest {}
+message ListArenasResponse { repeated ArenaDescriptor arenas = 1; }
+
+message SpawnActorInArenaRequest {
+  tongsim_lite.object.ObjectId arena_id = 1;
+  string class_path = 2;                           // 蓝图/类路径
+  tongsim_lite.common.Transform local_transform = 3;// 相对锚点
+}
+message SpawnActorInArenaResponse { tongsim_lite.object.ObjectInfo actor = 1; }
+
+message SetActorPoseLocalRequest {
+  tongsim_lite.object.ObjectId arena_id = 1;
+  tongsim_lite.object.ObjectId actor_id = 2;
+  tongsim_lite.common.Transform local_transform = 3;
+  bool reset_physics = 4;
+}
+message GetActorPoseLocalRequest {
+  tongsim_lite.object.ObjectId arena_id = 1;
+  tongsim_lite.object.ObjectId actor_id = 2;
+}
+message GetActorPoseLocalResponse { tongsim_lite.common.Transform local_transform = 1; }
+
+message LocalToWorldRequest { tongsim_lite.object.ObjectId arena_id = 1; tongsim_lite.common.Transform local = 2; }
+message LocalToWorldResponse { tongsim_lite.common.Transform world = 1; }
+message WorldToLocalRequest { tongsim_lite.object.ObjectId arena_id = 1; tongsim_lite.common.Transform world = 2; }
+message WorldToLocalResponse { tongsim_lite.common.Transform local = 1; }
+
+
+message DestroyActorInArenaRequest {
+  tongsim_lite.object.ObjectId arena_id = 1;
+  tongsim_lite.object.ObjectId actor_id = 2;
+}
+
+message SimpleMoveTowardsInArenaRequest {
+  tongsim_lite.object.ObjectId arena_id = 1;
+  // 目标是 Arena-Local 坐标
+  tongsim_lite.common.Vector3f target_local_location = 2;
+
+  // 朝向模式（沿用 DemoRL 的枚举语义，可在此 proto 再定义或复用数值）
+  enum OrientationMode {
+    ORIENTATION_KEEP_CURRENT = 0;
+    ORIENTATION_FACE_MOVEMENT = 1;
+    ORIENTATION_GIVEN = 2;
+  }
+  OrientationMode orientation_mode = 3;
+  tongsim_lite.common.Vector3f given_forward = 4; // ORIENTATION_GIVEN 时生效
+}
+
+message SimpleMoveTowardsInArenaResponse {
+  tongsim_lite.common.Vector3f current_location = 1; // world 坐标返回
+  message HitResult {
+    string hit_actor = 1; // 简化版
+  }
+  HitResult hit_result = 2;
+}
+
+
+service ArenaService {
+  rpc LoadArena(LoadArenaRequest) returns (LoadArenaResponse);
+  rpc DestroyArena(DestroyArenaRequest) returns (tongsim_lite.common.Empty);
+  rpc ResetArena(ResetArenaRequest) returns (tongsim_lite.common.Empty);
+  rpc SetArenaVisible(SetArenaVisibleRequest) returns (tongsim_lite.common.Empty);
+  rpc ListArenas(ListArenasRequest) returns (ListArenasResponse);
+
+  rpc SpawnActorInArena(SpawnActorInArenaRequest) returns (SpawnActorInArenaResponse);
+  rpc SetActorPoseLocal(SetActorPoseLocalRequest) returns (tongsim_lite.common.Empty);
+  rpc GetActorPoseLocal(GetActorPoseLocalRequest) returns (GetActorPoseLocalResponse);
+
+  rpc LocalToWorld(LocalToWorldRequest) returns (LocalToWorldResponse);
+  rpc WorldToLocal(WorldToLocalRequest) returns (WorldToLocalResponse);
+
+  rpc DestroyActorInArena (DestroyActorInArenaRequest) returns (tongsim_lite.common.Empty);
+  rpc SimpleMoveTowardsInArena (SimpleMoveTowardsInArenaRequest) returns (SimpleMoveTowardsInArenaResponse);
+}
