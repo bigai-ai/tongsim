@@ -1,5 +1,5 @@
 """
-Multi-Agent Cooperative Survival & Rivalry (MACSR) Environment
+Multi-Agent Cooperative Survival & Rivalry (MACS) Environment
 
 This module implements a sophisticated multi-agent reinforcement learning environment
 built on top of TongSim and Unreal Engine. The environment simulates multiple parallel
@@ -41,9 +41,9 @@ from xuance.environment.multi_agent_env.utils import (
 )
 
 
-class MACSR(gym.Env):
+class MACS(gym.Env):
     """
-    Multi-Agent Cooperative Survival & Rivalry (MACSR) environment.
+    Multi-Agent Cooperative Survival & Rivalry (MACS) environment.
 
     This is a complex multi-agent environment based on TongSim and Unreal Engine.
     In multiple parallel arenas, pursuing agents (Pursuers) must learn to cooperate
@@ -107,7 +107,7 @@ class MACSR(gym.Env):
         steering_strength=0.1,
     ):
         """
-        Initialize the MACSR environment.
+        Initialize the MACS environment.
 
         Args:
             config: Optional configuration dictionary (currently unused).
@@ -1430,5 +1430,5 @@ class MACSR(gym.Env):
             Always call this method when finished with the environment to prevent
             resource leaks and ensure proper cleanup of the TongSim server connection.
         """
-        print("[INFO] Closing MACSR environment...")
+        print("[INFO] Closing MACS environment...")
         self.ue.close()

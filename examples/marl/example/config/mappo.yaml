@@ -1,6 +1,6 @@
 agent: "MAPPO"  # The agent name.
-env_name: "parralle_UeMACSR"  # The environment name.
-env_id: "MACSR"  # The environment id.
+env_name: "parralle_UeMACS"  # The environment name.
+env_id: "MACS"  # The environment id.
 env_seed: 1  # The random seed of the environment.
 continuous_action: True  # If to use continuous control.
 learner: "MAPPO_Clip_Learner" #这里定义了更新的地方
@@ -66,5 +66,5 @@ running_steps: 2000000  # The total running steps.  #训练200万步
 eval_interval: 100000  # The interval between every two trainings.
 test_episode: 4 # The episodes to test in each test period.
 
-log_dir: "./logs/mappo/"
-model_dir: "./models/mappo/"
+log_dir: "./examples/marl/logs/mappo/"
+model_dir: "./examples/marl/models/mappo/"

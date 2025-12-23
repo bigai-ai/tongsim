@@ -2,7 +2,7 @@
 Utility functions for multi-agent environment simulation.
 
 This module provides helper functions for physics calculations, async task management,
-and geometric transformations used in the MACSR multi-agent environment.
+and geometric transformations used in the MACS multi-agent environment.
 """
 
 import asyncio

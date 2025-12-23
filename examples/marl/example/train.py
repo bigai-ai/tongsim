@@ -9,8 +9,8 @@ def main():
     parser.add_argument(
         "--config", type=str, default="examples/marl/example/config/mappo.yaml", help="Path to the configuration file."
     )
-    parser.add_argument("--env", type=str, default="UeMACSR", help="The environment type.")
-    parser.add_argument("--env_id", type=str, default="MACSR-v1", help="The specific environment ID.")
+    parser.add_argument("--env", type=str, default="UeMACS", help="The environment type.")
+    parser.add_argument("--env_id", type=str, default="MACS-v1", help="The specific environment ID.")
     parser.add_argument("--test", action="store_true", help="Run in test mode.")
     parser.add_argument(
         "--load_model_path", type=str, default=None, help="Path to a specific model to load for testing."

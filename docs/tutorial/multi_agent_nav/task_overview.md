@@ -1,18 +1,18 @@
-# Multi-Agent Navigation with MACSR Environment
+# Multi-Agent Navigation with MACS Environment
 
 [![Python Version](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
 [![PyTorch Version](https://img.shields.io/badge/PyTorch-2.8+-ee4c2c.svg)](https://pytorch.org/)
 <!-- [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.txt) -->
 
-This project is a reinforcement learning codebase featuring a lightweight adaptation of the powerful [XuanCe](https://github.com/agi-brain/xuance) framework, specifically configured for the Multi-Agent Cooperative Search and Rescue (MACSR) environment within the `tongsim` simulator. It aims to provide researchers and developers with an out-of-the-box solution for environment setup, model training, and performance evaluation.
+This project is a reinforcement learning codebase featuring a lightweight adaptation of the powerful [XuanCe](https://github.com/agi-brain/xuance) framework, specifically configured for the Multi-Agent Cooperative Search (MACS) environment within the `tongsim` simulator. It aims to provide researchers and developers with an out-of-the-box solution for environment setup, model training, and performance evaluation.
 
-![MACSR Environment Overview](environment.png)
-*Figure: Multi-Agent Cooperative Search and Rescue (MACSR) environment visualization*
+![MACS Environment Overview](environment.png)
+*Figure: Multi-Agent Cooperative Search (MACS) environment visualization*
 
 
-## The MACSR Benchmark
+## The MACS Benchmark
 
-The **Multi-Agent Cooperative Search and Rescue (MACSR)** benchmark is a multi-agent cooperative task designed to evaluate agent collaboration capabilities in complex, dynamic environments. Built on the TongSim platform and Unreal Engine (UE), this benchmark provides a testing scenario for multi-agent reinforcement learning algorithms.
+The **Multi-Agent Cooperative Search (MACS)** benchmark is a multi-agent cooperative task designed to evaluate agent collaboration capabilities in complex, dynamic environments. Built on the TongSim platform and Unreal Engine (UE), this benchmark provides a testing scenario for multi-agent reinforcement learning algorithms.
 
 ### Task Overview
 
@@ -46,6 +46,7 @@ In a dynamic flood disaster scenario, a multi-agent team must cooperatively gath
 **Action Space:**
 
 Each agent's action space is continuous and 2-dimensional, represented as `Box(low=-1.0, high=1.0, shape=(2,))`. The two action values control:
+
 - **Horizontal movement** (x-axis): Value ranges from -1.0 to 1.0
 - **Vertical movement** (y-axis): Value ranges from -1.0 to 1.0
 
@@ -56,6 +57,7 @@ These normalized action values are scaled by an action multiplier to determine t
 The observation for each agent is constructed using a sensor-based perception system. Each agent is equipped with `n_sensors` (default: 30) radial sensors distributed uniformly around the agent in a circular pattern, with a maximum sensing range of `sensor_range` (default: 500.0).
 
 For each sensor ray, the observation includes:
+
 - **Agent detection** (3 features): Normalized distance, orientation_x, orientation_y
 - **Supply detection** (2 features): Normalized distance, velocity projection along ray direction
 - **Hazard detection** (2 features): Normalized distance, velocity projection along ray direction
@@ -63,65 +65,69 @@ For each sensor ray, the observation includes:
 - **Obstacle detection** (1 feature): Normalized distance to static obstacles
 
 Additionally, each observation includes 2 binary flags indicating whether the agent:
+
 - Recently encountered a supply item (last dimension - 2)
 - Recently encountered a hazard (last dimension - 1)
 
-The total observation dimension is: `(n_sensors × 9) + 2`, where 9 is the sum of all feature dimensions per sensor ray.
+The total observation dimension is: `(n_sensors * 9) + 2`, where 9 is the sum of all feature dimensions per sensor ray.
 
-For implementation details, please refer to [`macsr_dummy.py`](https://github.com/bigai-ai/tongsim/blob/main/examples/marl/xuance/environment/multi_agent_env/macsr_dummy.py).
+For implementation details, please refer to [`macs_dummy.py`](https://github.com/bigai-ai/tongsim/blob/main/examples/marl/xuance/environment/multi_agent_env/macs_dummy.py).
 
-Refer to XXX, launch TongSim, and open the `L_macsr` scene map. You can create the MACSR environment using the following code.
-```bash
-   def make_env(env_seed):
-      """
-      Factory function to create a MACSR environment instance.
+Launch TongSim, and open the `L_MACS` scene map. You can create the MACS environment using the following code.
 
-      Args:
-         env_seed: Random seed for environment initialization.
+```python
+def make_env(env_seed):
+    """
+    Factory function to create a MACS environment instance.
 
-      Returns:
-         Initialized MACSR environment instance.
-      """
-      env_instance = MACSR(
-         env_seed=env_seed,
-         num_arenas=4,
-         max_cycles=500,
-         n_pursuers=5,
-         n_evaders=10,
-         n_poisons=10
-      )
-      return env_instance
-   ```
+    Args:
+        env_seed: Random seed for environment initialization.
+
+    Returns:
+        Initialized MACS environment instance.
+    """
+    env_instance = MACS(
+        env_seed=env_seed,
+        num_arenas=4,
+        max_cycles=500,
+        n_pursuers=5,
+        n_evaders=10,
+        n_poisons=10
+    )
+    return env_instance
+```
+
 You can drive the agents to perform random movements in the environment using the following code. For details, please refer to [`dummy_UE.py`](https://github.com/bigai-ai/tongsim/blob/main/examples/marl/xuance/environment/vector_envs/dummy/dummy_UE.py).
-```bash
-   env_fns = [make_env]
-   envs = TongSimVecMultiAgentEnv(env_fns=env_fns, env_seed=1)
 
-   print("[INFO] Environment created successfully!")
-   print(f"  - Number of parallel environments (num_envs): {envs.num_envs}")
-   print(f"  - Number of agents (num_agents): {envs.num_agents}")
-   print(f"  - State space (state_space): {envs.state_space}")
+```python
+env_fns = [make_env]
+envs = TongSimVecMultiAgentEnv(env_fns=env_fns, env_seed=1)
 
-   # Initial reset
-   observations, infos = envs.reset()
+print("[INFO] Environment created successfully!")
+print(f"  - Number of parallel environments (num_envs): {envs.num_envs}")
+print(f"  - Number of agents (num_agents): {envs.num_agents}")
+print(f"  - State space (state_space): {envs.state_space}")
 
-   # Training loop demonstration
-   for step in range(300000):
-      if step % 1000 == 0:
-            print(f"\n--- Training Step {step + 1} ---")
+# Initial reset
+observations, infos = envs.reset()
 
-      # Sample random actions for all environments
-      actions = []
-      for i in range(envs.num_envs):
-            arena_actions = {
-               agent: envs.action_space[agent].sample()
-               for agent in envs.agents
-            }
-            actions.append(arena_actions)
+# Training loop demonstration
+for step in range(300000):
+    if step % 1000 == 0:
+        print(f"\n--- Training Step {step + 1} ---")
 
-      # Execute environment step
-      next_observations, rewards, terminateds, truncateds, infos = envs.step(actions)
-   ```
+    # Sample random actions for all environments
+    actions = []
+    for i in range(envs.num_envs):
+        arena_actions = {
+            agent: envs.action_space[agent].sample()
+            for agent in envs.agents
+        }
+        actions.append(arena_actions)
+
+    # Execute environment step
+    next_observations, rewards, terminateds, truncateds, infos = envs.step(actions)
+```
 
 ## Acknowledgements
 

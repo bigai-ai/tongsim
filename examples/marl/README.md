@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a reinforcement learning codebase designed for the **Multi-Agent Collaborative Search and Rescue (MACSR)** task. At its core, this benchmark features a challenging multi-agent collaborative mission: in a dynamic flood disaster scenario, a team of agents must **cooperatively collect supplies** while **avoiding moving hazards**. This task is designed to evaluate the decentralized decision-making and collaborative capabilities of agents under complex constraints such as partial observability, mandatory cooperation, and limited resources.
+This project is a reinforcement learning codebase designed for the **Multi-Agent Collaborative Search (MACS)** task. At its core, this benchmark features a challenging multi-agent collaborative mission: in a dynamic flood disaster scenario, a team of agents must **cooperatively collect supplies** while **avoiding moving hazards**. This task is designed to evaluate the decentralized decision-making and collaborative capabilities of agents under complex constraints such as partial observability, mandatory cooperation, and limited resources.
 
 ## Installation
 
@@ -68,4 +68,4 @@ tensorboard --logdir logs
 
 ## Notes
 
-- Before executing the command, make sure the Unreal Editor already has the `L_MACSR` main level open.
+- Before executing the command, make sure the Unreal Editor already has the `L_MACS` main level open.

@@ -1,7 +1,7 @@
 """
 TongSim Vectorized Multi-Agent Environment Wrapper for XuanCe Framework.
 
-This module provides a vectorized environment wrapper that integrates the MACSR
+This module provides a vectorized environment wrapper that integrates the MACS
 multi-agent simulation with the XuanCe reinforcement learning framework.
 """
 
@@ -9,21 +9,21 @@ import gymnasium as gym
 import numpy as np
 
 from xuance.common import space2shape
-from xuance.environment.multi_agent_env.macsr_dummy import MACSR
+from xuance.environment.multi_agent_env.macs_dummy import MACS
 from xuance.environment.vector_envs.vector_env import AlreadySteppingError, NotSteppingError, VecEnv
 
 
 class TongSimVecMultiAgentEnv(VecEnv):
     """
-    Vectorized multi-agent environment wrapper for MACSR simulation.
+    Vectorized multi-agent environment wrapper for MACS simulation.
 
-    This wrapper adapts the MACSR environment to be compatible with XuanCe's
+    This wrapper adapts the MACS environment to be compatible with XuanCe's
     vectorized environment interface. It manages parallel arenas internally
-    through the MACSR environment.
+    through the MACS environment.
 
     Args:
         env_fns: List containing a single environment constructor function.
-                 Only one constructor is supported as MACSR manages parallelization internally.
+                 Only one constructor is supported as MACS manages parallelization internally.
         env_seed: Random seed for environment initialization.
 
     Raises:
@@ -39,10 +39,10 @@ class TongSimVecMultiAgentEnv(VecEnv):
         if len(env_fns) != 1:
             raise ValueError(
                 "TongSimVecMultiAgentEnv only supports a single environment constructor "
-                "in env_fns, as MACSR environment manages parallel arenas internally."
+                "in env_fns, as MACS environment manages parallel arenas internally."
             )
 
-        # Initialize the MACSR environment
+        # Initialize the MACS environment
         self.env = env_fns[0](env_seed=env_seed)
 
         # Extract environment configuration
@@ -220,15 +220,15 @@ class TongSimVecMultiAgentEnv(VecEnv):
 
 def make_env(env_seed):
     """
-    Factory function to create a MACSR environment instance.
+    Factory function to create a MACS environment instance.
 
     Args:
         env_seed: Random seed for environment initialization.
 
     Returns:
-        Initialized MACSR environment instance.
+        Initialized MACS environment instance.
     """
-    env_instance = MACSR(env_seed=env_seed, num_arenas=9, max_cycles=500, n_pursuers=5, n_evaders=10, n_poisons=10)
+    env_instance = MACS(env_seed=env_seed, num_arenas=9, max_cycles=500, n_pursuers=5, n_evaders=10, n_poisons=10)
     return env_instance
 
 

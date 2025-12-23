@@ -50,7 +50,7 @@ src/tongsim_lite_protobuf/**
 
 # TODO(@yangxueyan)
 [Oo]bj/
-models/
+# models/
 Binaries/
 DerivedDataCache/
 Intermediate/
@@ -60,3 +60,6 @@ Saved/
 *.sln
 *.vsconfig
 all.proto.desc
+
+
+unreal/

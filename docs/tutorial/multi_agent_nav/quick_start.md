@@ -87,10 +87,19 @@ Whenever you want to work on this project, you only need to perform one step: **
   source .venv/bin/activate
   ```
 
-### Verification
+### Generate Protobuf Files
 
-To verify your installation, you can run a pre-trained model. Before executing the command, make sure the Unreal Editor already has the `L_MACSR` main level open:
+After activating the environment, you need to generate the Python code from the Protobuf definitions:
 
 ```bash
-uv run examples/marl/example/train.py  --config examples/marl/example/config/mappo.yaml --test
+uv run python scripts/generate_pb2.py
+```
+
+
+### Verification
+
+To verify your installation, you can run a pre-trained model. Before executing the command, make sure the Unreal Editor already has the `L_MACS` main level open:
+
+```bash
+uv run examples/marl/example/train.py  --config examples/marl/example/config/mappo.yaml --test --method mappo
 ```
