@@ -37,4 +37,3 @@ uv run mkdocs serve
 - If you add or change APIs, please update `docs/` accordingly.
 
 By submitting a pull request, you agree that your contribution will be licensed under the terms in `LICENSE`.
-

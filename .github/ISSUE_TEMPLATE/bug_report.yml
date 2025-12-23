@@ -58,4 +58,3 @@ body:
       placeholder: "Windows 11 / Ubuntu 22.04"
     validations:
       required: false
-

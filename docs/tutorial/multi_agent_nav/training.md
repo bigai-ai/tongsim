@@ -53,6 +53,3 @@ uv run examples/marl/example/train.py  --config examples/marl/example/config/map
 ```
 
 The evaluation script will load the most recent checkpoint from the `models/` directory and run it in a test environment without further training.
-
-
-

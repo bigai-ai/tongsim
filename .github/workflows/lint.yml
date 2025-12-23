@@ -29,4 +29,3 @@ jobs:
 
       - name: Ruff lint
         run: uv run ruff check
-
