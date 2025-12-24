@@ -93,10 +93,10 @@ class MACS(gym.Env):
         n_sensors=30,
         sensor_range=500.0,
         pursuer_max_accel=0.5,
-        evader_speed=0.15,
-        poison_speed=0.15,
-        poison_reward=-1.0,
-        food_reward=10.0,
+        supply_speed=0.15,
+        hazard_speed=0.15,
+        hazard_reward=-1.0,
+        supply_reward=10.0,
         encounter_reward=0.01,
         thrust_penalty=-0.01,
         local_ratio=0.9,
@@ -119,10 +119,10 @@ class MACS(gym.Env):
             n_sensors (int): Number of ray sensors per agent for perception.
             sensor_range (float): Maximum detection range of ray sensors (in Unreal units).
             pursuer_max_accel (float): Maximum acceleration of pursuing agents (currently unused).
-            evader_speed (float): Movement speed of food entities.
-            poison_speed (float): Movement speed of poison entities.
-            poison_reward (float): Base reward value for colliding with poison (typically negative).
-            food_reward (float): Base reward value for successfully capturing food.
+            supply_speed (float): Movement speed of supply entities.
+            hazard_speed (float): Movement speed of poison entities.
+            hazard_reward (float): Base reward value for colliding with poison (typically negative).
+            supply_reward (float): Base reward value for successfully capturing supply.
             encounter_reward (float): Reward value for encountering food without successful capture.
             thrust_penalty (float): Penalty coefficient for agent movement (energy cost).
             local_ratio (float): Ratio of individual reward in final mixed reward calculation.
@@ -152,10 +152,10 @@ class MACS(gym.Env):
         self.n_sensors = n_sensors
         self.sensor_range = sensor_range
         self.pursuer_max_accel = pursuer_max_accel
-        self.evader_speed = evader_speed
-        self.poison_speed = poison_speed
-        self.poison_reward_num = poison_reward
-        self.food_reward_num = food_reward
+        self.supply_speed = supply_speed
+        self.hazard_speed = hazard_speed
+        self.hazard_reward_num = hazard_reward
+        self.supply_reward_num = supply_reward
         self.encounter_reward_num = encounter_reward
         self.thrust_penalty = thrust_penalty
         self.local_ratio = local_ratio
@@ -301,12 +301,12 @@ class MACS(gym.Env):
         entity_configs = {
             self.ENTITY_COIN: {
                 "scale": DEFAULT_CONFIG["coin_scale"],
-                "speed": self.evader_speed,
+                "speed": self.supply_speed,
                 "pos_map_key": "coins",
             },
             self.ENTITY_POISON: {
                 "scale": DEFAULT_CONFIG["default_scale"],
-                "speed": self.poison_speed,
+                "speed": self.hazard_speed,
                 "pos_map_key": "poisons",
             },
         }
@@ -559,7 +559,7 @@ class MACS(gym.Env):
 
                     # Initialize velocity for moving entities (coins and poisons)
                     if entity_type in [self.ENTITY_COIN, self.ENTITY_POISON]:
-                        speed = self.evader_speed if entity_type == self.ENTITY_COIN else self.poison_speed
+                        speed = self.supply_speed if entity_type == self.ENTITY_COIN else self.hazard_speed
                         # Generate random movement direction
                         random_dir = self.np_random.standard_normal(2)
                         random_dir /= np.linalg.norm(random_dir) + 1e-8
@@ -1054,7 +1054,7 @@ class MACS(gym.Env):
 
             # Create movement tasks for coins and poisons
             for entity_type in [self.ENTITY_COIN, self.ENTITY_POISON]:
-                speed = self.evader_speed if entity_type == self.ENTITY_COIN else self.poison_speed
+                speed = self.supply_speed if entity_type == self.ENTITY_COIN else self.hazard_speed
                 id_list_key = f"ids_of_{entity_type}s"
                 pos_map_key = f"{entity_type}s"
 
@@ -1282,11 +1282,11 @@ class MACS(gym.Env):
         Reward Logic:
             - Coins:
                 - All colliding agents receive encounter_reward
-                - If n_coop agents collide, they additionally receive food_reward
+                - If n_coop agents collide, they additionally receive supply_reward
                 - Coin bounces regardless of capture status (simulating struggle)
                 - Captured coins are respawned
             - Poisons:
-                - Colliding agent receives poison_reward (typically negative)
+                - Colliding agent receives hazard_reward (typically negative)
                 - Poison is always respawned after collision
 
         Args:
@@ -1322,7 +1322,7 @@ class MACS(gym.Env):
 
                     # Additional capture reward if threshold met
                     if is_captured:
-                        per_arena_rewards[arena_idx]["food"][agent_idx] += self.food_reward_num
+                        per_arena_rewards[arena_idx]["food"][agent_idx] += self.supply_reward_num
 
                 # Simulate coin bounce/struggle regardless of capture
                 old_vel = arena_data["velocities"].get(coin_id, np.zeros(2))
@@ -1342,7 +1342,7 @@ class MACS(gym.Env):
                     if agent_id not in arena_data["ids_of_agents"]:
                         continue
                     agent_idx = arena_data["ids_of_agents"].index(agent_id)
-                    per_arena_rewards[arena_idx]["poison"][agent_idx] += self.poison_reward_num
+                    per_arena_rewards[arena_idx]["poison"][agent_idx] += self.hazard_reward_num
                     arena_data["hit_poison"][agent_idx] = 1
 
                 # Always respawn poison after collision
