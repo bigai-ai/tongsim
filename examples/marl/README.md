@@ -4,7 +4,7 @@
 
 This project is a reinforcement learning codebase featuring a lightweight adaptation of the [XuanCe](https://github.com/agi-brain/xuance) framework, specifically configured for the **Multi-Agent Collaborative Search (MACS)** task within the TongSim simulator.
 
-In a dynamic flood disaster scenario, a team of agents must **cooperatively collect supplies** while **avoiding moving hazards**. This task evaluates decentralized decision-making and collaborative capabilities under constraints such as partial observability, mandatory cooperation, and limited resources.
+In a dynamic flood disaster scenario, a team of agents must **cooperatively collect supplies** while **avoiding moving hazards**. This task evaluates decentralized decision-making and collaborative capabilities under constraints such as partial observability, mandatory cooperation.
 
 ### Key Challenges
 - **Local Perception & Dynamic Adaptation**: Agents operate with only local sensor data and no global view.
@@ -16,7 +16,7 @@ In a dynamic flood disaster scenario, a team of agents must **cooperatively coll
 This project utilizes a hybrid setup combining **Conda** (for system-level dependencies like MPI) and **uv** (for high-performance Python package management).
 
 ### 1. Set up TongSIM
-Follow the official instructions to install and configure the TongSIM simulator. Verify that the `demo_rl` example runs successfully.
+Follow the official instructions to install and configure the TongSIM simulator. Verify that the `quickstart_demo.py` example runs successfully.
 
 ### 2. Create the Conda Base Environment
 This environment provides the core Python interpreter and MPI support.
@@ -55,7 +55,7 @@ Before executing the command, make sure the Unreal Editor already has the **`L_M
 
 ```bash
 # Train the MAPPO algorithm using the configuration from mappo.yaml
-uv run examples/marl/example/train.py --config examples/marl/example/config/mappo.yaml
+uv run examples/marl/example/train.py --config examples/marl/example/config/mappo.yaml --method mappo
 ```
 
 You can train other algorithms by changing the `--config` parameter (e.g., `ippo.yaml`).
@@ -63,7 +63,7 @@ You can train other algorithms by changing the `--config` parameter (e.g., `ippo
 ### Evaluating a Pre-trained Model
 ```bash
 # Load and test the latest MAPPO model
-uv run examples/marl/example/train.py --config examples/marl/example/config/mappo.yaml --test
+uv run examples/marl/example/train.py --config examples/marl/example/config/mappo.yaml --test --method mappo
 ```
 
 ### Monitoring Training Progress
