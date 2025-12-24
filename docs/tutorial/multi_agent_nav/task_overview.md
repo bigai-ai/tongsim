@@ -90,9 +90,9 @@ def make_env(env_seed):
         env_seed=env_seed,
         num_arenas=4,
         max_cycles=500,
-        n_pursuers=5,
-        n_evaders=10,
-        n_poisons=10
+        n_rescuers=5,
+        n_supplies=10,
+        n_hazards=5
     )
     return env_instance
 ```

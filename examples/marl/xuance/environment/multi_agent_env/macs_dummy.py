@@ -57,9 +57,9 @@ class MACS(gym.Env):
 
     Attributes:
         num_arenas (int): Number of parallel arenas running simultaneously.
-        n_pursuers (int): Number of pursuing agents per arena.
-        n_evaders (int): Number of food entities (coins) per arena.
-        n_poisons (int): Number of poison entities per arena.
+        n_rescuers (int): Number of pursuing agents per arena.
+        n_supplies (int): Number of food entities (coins) per arena.
+        n_hazards (int): Number of poison entities per arena.
         n_coop (int): Minimum number of agents required to cooperatively capture food.
         n_sensors (int): Number of ray sensors per agent.
         sensor_range (float): Maximum detection range of ray sensors.
@@ -86,9 +86,9 @@ class MACS(gym.Env):
         self,
         config=None,
         num_arenas: int = 4,
-        n_pursuers=5,
-        n_evaders=10,
-        n_poisons=5,
+        n_rescuers=5,
+        n_supplies=10,
+        n_hazards=5,
         n_coop=2,
         n_sensors=30,
         sensor_range=500.0,
@@ -112,9 +112,9 @@ class MACS(gym.Env):
         Args:
             config: Optional configuration dictionary (currently unused).
             num_arenas (int): Number of parallel arenas to simulate.
-            n_pursuers (int): Number of pursuing agents per arena.
-            n_evaders (int): Number of food entities (coins) per arena.
-            n_poisons (int): Number of poison entities per arena.
+            n_rescuers (int): Number of pursuing agents per arena.
+            n_supplies (int): Number of food entities (coins) per arena.
+            n_hazards (int): Number of poison entities per arena.
             n_coop (int): Minimum number of agents required to cooperatively capture one food entity.
             n_sensors (int): Number of ray sensors per agent for perception.
             sensor_range (float): Maximum detection range of ray sensors (in Unreal units).
@@ -145,9 +145,9 @@ class MACS(gym.Env):
 
         # --- Environment Parameters ---
         self.num_arenas = num_arenas
-        self.n_pursuers = n_pursuers
-        self.n_evaders = n_evaders
-        self.n_poisons = n_poisons
+        self.n_rescuers = n_rescuers
+        self.n_supplies = n_supplies
+        self.n_hazards = n_hazards
         self.n_coop = n_coop
         self.n_sensors = n_sensors
         self.sensor_range = sensor_range
@@ -164,11 +164,11 @@ class MACS(gym.Env):
         self.render_mode = render_mode
         self.steering_strength = steering_strength
         self.env_seed = env_seed
-        self.actors_per_arena = self.n_pursuers + self.n_evaders + self.n_poisons
+        self.actors_per_arena = self.n_rescuers + self.n_supplies + self.n_hazards
 
         # --- State Variables ---
-        self.agents = [f"pursuer_{i}" for i in range(self.n_pursuers)]
-        self.num_agents = self.n_pursuers
+        self.agents = [f"pursuer_{i}" for i in range(self.n_rescuers)]
+        self.num_agents = self.n_rescuers
         self.agent_ids_map = [{} for _ in range(self.num_arenas)]
         self.arena_ids: list[str] = []
         self.arena_anchors: dict[str, ts.Transform] = {}
@@ -437,7 +437,7 @@ class MACS(gym.Env):
                 spawn_actors_concurrently(
                     self.context,
                     arena_id,
-                    self.n_evaders,
+                    self.n_supplies,
                     DEFAULT_CONFIG["coin_bp_path"],
                     self.TAG_COIN,
                     DEFAULT_CONFIG["spawn_z"],
@@ -448,7 +448,7 @@ class MACS(gym.Env):
                 spawn_actors_concurrently(
                     self.context,
                     arena_id,
-                    self.n_poisons,
+                    self.n_hazards,
                     DEFAULT_CONFIG["poison_bp_path"],
                     self.TAG_POISON,
                     DEFAULT_CONFIG["spawn_z"],
@@ -459,7 +459,7 @@ class MACS(gym.Env):
                 spawn_actors_concurrently(
                     self.context,
                     arena_id,
-                    self.n_pursuers,
+                    self.n_rescuers,
                     DEFAULT_CONFIG["agent_bp_path"],
                     self.TAG_AGENT,
                     DEFAULT_CONFIG["spawn_z"],
@@ -753,7 +753,7 @@ class MACS(gym.Env):
             result_offset (int): Starting index of this arena's results in the complete list.
 
         Returns:
-            np.ndarray: Observation array of shape (n_pursuers, obs_dim).
+            np.ndarray: Observation array of shape (n_rescuers, obs_dim).
 
         Raises:
             IndexError: If ray index calculation exceeds the bounds of ray_results.
@@ -772,9 +772,9 @@ class MACS(gym.Env):
         """
         arena_data = self.arenas_data[arena_idx]
         # Initialize observation array with -1 (indicates no detection)
-        arena_obs = np.full((self.n_pursuers, self.obs_dim), -1.0, dtype=np.float32)
+        arena_obs = np.full((self.n_rescuers, self.obs_dim), -1.0, dtype=np.float32)
 
-        for agent_local_idx in range(self.n_pursuers):
+        for agent_local_idx in range(self.n_rescuers):
             for sensor_idx in range(self.n_sensors):
                 # Calculate global index in the combined ray results
                 ray_global_idx = result_offset + agent_local_idx * self.n_sensors + sensor_idx
@@ -864,7 +864,7 @@ class MACS(gym.Env):
         arena_obs_np = self._process_rays_for_one_arena(
             arena_idx=arena_idx, all_ray_results=ray_results, all_ray_directions=rays_directions, result_offset=0
         )
-        return {self.agents[i]: arena_obs_np[i] for i in range(self.n_pursuers)}
+        return {self.agents[i]: arena_obs_np[i] for i in range(self.n_rescuers)}
 
     def process_ray_results(self, ray_results: list[dict], rays_directions_map: dict):
         """
@@ -896,7 +896,7 @@ class MACS(gym.Env):
                 all_ray_directions=all_ray_directions,
                 result_offset=result_offset,
             )
-            observations_all_arenas[arena_idx] = {self.agents[i]: arena_obs_np[i] for i in range(self.n_pursuers)}
+            observations_all_arenas[arena_idx] = {self.agents[i]: arena_obs_np[i] for i in range(self.n_rescuers)}
 
         return observations_all_arenas
 
@@ -1016,9 +1016,9 @@ class MACS(gym.Env):
             arena_data["hit_coin"] = {}
             arena_data["hit_poison"] = {}
             rewards_this_arena = {
-                "control": np.zeros(self.n_pursuers),
-                "food": np.zeros(self.n_pursuers),
-                "poison": np.zeros(self.n_pursuers),
+                "control": np.zeros(self.n_rescuers),
+                "food": np.zeros(self.n_rescuers),
+                "poison": np.zeros(self.n_rescuers),
             }
 
             # Create movement tasks for agents
@@ -1396,7 +1396,7 @@ class MACS(gym.Env):
             final_rewards = local_rewards * self.local_ratio + global_reward * (1 - self.local_ratio)
 
             # Convert to dictionary format
-            final_rewards_all_arenas.append({self.agents[i]: final_rewards[i] for i in range(self.n_pursuers)})
+            final_rewards_all_arenas.append({self.agents[i]: final_rewards[i] for i in range(self.n_rescuers)})
 
         # Step 2: Generate fresh observations through ray-tracing
         jobs, rays_directions_map = self.build_observation_rays()

@@ -54,7 +54,7 @@ class TongSimVecMultiAgentEnv(VecEnv):
 
         # Agent configuration
         self.agents = self.env.agents
-        self.num_agents = self.env.n_pursuers
+        self.num_agents = self.env.n_rescuers
         self.agent_ids = [f"agent_{i}" for i in range(self.num_agents)]
 
         # Construct global state space
@@ -228,7 +228,7 @@ def make_env(env_seed):
     Returns:
         Initialized MACS environment instance.
     """
-    env_instance = MACS(env_seed=env_seed, num_arenas=9, max_cycles=500, n_pursuers=5, n_evaders=10, n_poisons=10)
+    env_instance = MACS(env_seed=env_seed, num_arenas=9, max_cycles=500, n_rescuers=5, n_supplies=10, n_hazards=10)
     return env_instance
 
 
