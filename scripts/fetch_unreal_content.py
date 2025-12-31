@@ -9,7 +9,6 @@ import tempfile
 import zipfile
 from pathlib import Path
 
-
 DEFAULT_HF_DATASET = "bigai/tongsim-unreal-content"
 DEFAULT_WINDOWS_CACHE_DIR_NAME = "hf"
 
