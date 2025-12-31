@@ -48,24 +48,61 @@ This repository contains:
 
 ## Getting Started
 
-### Install UE 5.6
+### Python Installation
 
+Use either `uv` (recommended) or plain `pip`.
+
+#### Option A: uv (recommended)
+
+1. Install [`uv`](https://docs.astral.sh/uv/)
+2. Create and sync a virtual environment (defaults to installing `dev` and `docs` groups as configured):
+   ```powershell
+   uv venv
+   uv sync
+   ```
+
+3. Run examples (start the UE project first; gRPC at `127.0.0.1:5726`):
+   ```powershell
+   uv run examples/quickstart_demo.py
+   uv run examples/voxel.py
+   ```
+
+#### Option B: pip
+
+1. Install the package in editable mode:
+   ```powershell
+   pip install -e .
+   ```
+2. Optional: dev/docs tooling (for contributing or building docs):
+   ```powershell
+   pip install pre-commit black ruff mkdocs mkdocs-material mkdocstrings-python mkdocs-static-i18n mkdocs-redirects pytest pytest-asyncio
+   pre-commit install
+   ```
+3. Run examples (start the UE project first):
+   ```powershell
+   python examples\quickstart_demo.py
+   python examples\voxel.py
+   ```
+
+### Install UE 5.6
 1. Install Unreal Engine 5.6 via Epic Games Launcher (Editor build matching your platform).
-2. Install and enable Git LFS:
+2. Install Git:
    ```powershell
    winget install Git.Git -s winget
-   git lfs install
    ```
 
 ### Run the UE Project
 
-1. Clone the repo and pull LFS assets:
+1. Clone the repo:
    ```powershell
    git clone https://github.com/bigai-ai/tongsim
    cd tongsim
-   git lfs pull
    ```
-2. (First-time) Download and extract the TongSimGrpc gRPC dependency bundle (Release asset) to the repo root:
+2. Download Unreal Engine assets into `unreal/Content`:
+   ```powershell
+   uv run scripts/fetch_unreal_content.py
+   ```
+3. (First-time) Download and extract the TongSimGrpc gRPC dependency bundle (Release asset) to the repo root:
    - Windows (PowerShell):
      ```powershell
      $base = "https://github.com/bigai-ai/tongsim/releases/download/tongsimgrpc-deps-v1.0"
@@ -104,42 +141,6 @@ This repository contains:
    Then Build (first build compiles TongSIM_* modules and plugins).
 5. Double-click `unreal/TongSim_Lite.uproject` to open UE 5.6 and ensure plugins (TongSIMCore, TongSIMGrpc, Puerts, etc.) are enabled.
 6. If Windows Firewall prompts, allow UE Editor network access (gRPC defaults to `127.0.0.1:5726`).
-
-### Python Installation
-
-Use either `uv` (recommended) or plain `pip`.
-
-#### Option A: uv (recommended)
-
-1. Install [`uv`](https://docs.astral.sh/uv/)
-2. Create and sync a virtual environment (defaults to installing `dev` and `docs` groups as configured):
-   ```powershell
-   uv venv
-   uv sync
-   ```
-
-3. Run examples (start the UE project first; gRPC at `127.0.0.1:5726`):
-   ```powershell
-   uv run examples/quickstart_demo.py
-   uv run examples/voxel.py
-   ```
-
-#### Option B: pip
-
-1. Install the package in editable mode:
-   ```powershell
-   pip install -e .
-   ```
-2. Optional: dev/docs tooling (for contributing or building docs):
-   ```powershell
-   pip install pre-commit black ruff mkdocs mkdocs-material mkdocstrings-python mkdocs-static-i18n mkdocs-redirects pytest pytest-asyncio
-   pre-commit install
-   ```
-3. Run examples (start the UE project first):
-   ```powershell
-   python examples\quickstart_demo.py
-   python examples\voxel.py
-   ```
 
 ## Quick Check
 

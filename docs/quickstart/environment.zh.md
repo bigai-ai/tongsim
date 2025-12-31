@@ -18,31 +18,37 @@
         - **使用 C++ 的桌面开发**
         - **使用 C++ 的游戏开发**
     - Python `>= 3.12`
-    - Git + Git LFS
+    - Git
     - （可选）NVIDIA 驱动 / CUDA（仅在你的流程需要时）
 
 === ":material-linux: Ubuntu 22.04"
 
     - Unreal Engine `5.6`（Linux 安装方式差异较大，请参考 Epic 官方文档）
     - Python `>= 3.12`
-    - Git + Git LFS
+    - Git
 
 !!! warning ":material-alert: 路径命名规范"
     建议将工程放在 **不含中文、空格、特殊字符** 且 **目录层级不过深** 的路径下，以避免 Unreal 构建与资源加载问题。
 
 ---
 
-## :material-download: 获取代码（Git + LFS）
+## :material-download: 获取代码（Git）
 
 ```powershell
 git clone https://github.com/bigai-ai/tongsim
 cd tongsim
-git lfs install
-git lfs pull
 ```
 
-!!! note ":material-information-outline: 为什么要用 LFS？"
-    TongSIM 的大量资源通过 **Git LFS** 存储。若跳过 `git lfs pull`，打开 Unreal 工程时可能会出现资源缺失。
+## :material-package-down: 下载 Unreal Engine 资源（`unreal/Content`）
+
+`unreal/Content` 不在 Git 仓库中（仅保留 README）。请从以下地址下载并解压到本仓库的 `unreal/Content/`：
+
+- https://huggingface.co/datasets/bigai/tongsim-unreal-content
+
+```powershell
+python -m pip install -U huggingface_hub
+python scripts/fetch_unreal_content.py
+```
 
 ---
 

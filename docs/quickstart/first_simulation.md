@@ -93,7 +93,7 @@ The quickstart demo uses `examples/quickstart_demo.py`, which will **automatical
     - As a fallback, open `/Game/Developer/Maps/L_DemoRL` manually and re-run the script.
 
 ??? tip "SpawnActor failed / actors do not move"
-    - Ensure Git LFS assets are present (`git lfs pull`).
+    - Ensure Unreal Content assets are present (`python scripts/fetch_unreal_content.py`).
     - The level must have a valid NavMesh (press **P** in the viewport to visualize navigation).
 
 ---

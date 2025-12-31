@@ -18,31 +18,37 @@ This guide helps you set up **TongSIM Lite** locally and verify that the **Unrea
         - **Desktop development with C++**
         - **Game development with C++**
     - Python `>= 3.12`
-    - Git + Git LFS
+    - Git
     - (Optional) NVIDIA driver / CUDA (only if your workflow requires it)
 
 === ":material-linux: Ubuntu 22.04"
 
     - Unreal Engine `5.6` (Linux setup varies; follow Epic’s official guidance)
     - Python `>= 3.12`
-    - Git + Git LFS
+    - Git
 
 !!! warning ":material-alert: Path naming"
     Keep your project path **free of spaces, non-ASCII characters, and overly long directory names** to avoid Unreal build and asset issues.
 
 ---
 
-## :material-download: Get the repository (Git + LFS)
+## :material-download: Get the repository
 
 ```powershell
 git clone https://github.com/bigai-ai/tongsim
 cd tongsim
-git lfs install
-git lfs pull
 ```
 
-!!! note ":material-information-outline: Why LFS matters"
-    TongSIM assets are stored with **Git LFS**. If `git lfs pull` is skipped, the Unreal project may open with missing content.
+## :material-package-down: Download Unreal Engine assets (`unreal/Content`)
+
+`unreal/Content` is intentionally not stored in Git. Download it from:
+
+- https://huggingface.co/datasets/bigai/tongsim-unreal-content
+
+```powershell
+python -m pip install -U huggingface_hub
+python scripts/fetch_unreal_content.py
+```
 
 ---
 

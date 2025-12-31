@@ -11,28 +11,28 @@ This guide covers a practical workflow for bringing assets into **TongSIM Lite**
 
 ## :material-database: Get TongSIM assets
 
-TongSIM Lite includes a minimal set of demo content, but the full TongSIM asset library is provided as a separate dataset:
+TongSIM Lite does not store `unreal/Content/` in Git. Download the Unreal Content dataset:
 
-- :simple-huggingface: Assets dataset: `https://huggingface.co/datasets/bigai/TongSIM-Asset`
+- :simple-huggingface: Unreal Content dataset: `https://huggingface.co/datasets/bigai/tongsim-unreal-content`
 
-=== ":material-download: Download via Git LFS (recommended for large files)"
+=== ":material-script-text: Download via helper script (recommended)"
 
     ```bash
-    git lfs install
-    git clone https://huggingface.co/datasets/bigai/TongSIM-Asset
+    python -m pip install -U huggingface_hub
+    python scripts/fetch_unreal_content.py
     ```
 
 === ":material-language-python: Download via Python (huggingface_hub)"
 
     ```bash
     python -m pip install -U huggingface_hub
-    python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='bigai/TongSIM-Asset', repo_type='dataset', local_dir='TongSIM-Asset', local_dir_use_symlinks=False)"
+    python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='bigai/tongsim-unreal-content', repo_type='dataset', local_dir='tongsim-unreal-content', local_dir_use_symlinks=False)"
     ```
 
 !!! note ":material-information-outline: Import vs copy"
     How you integrate assets depends on the dataset format:
 
-    - If the dataset provides **UE-ready** assets (`.uasset`, `.umap`), copy them into `unreal/Content/` and reopen the project.
+    - For TongSIM Lite, run `python scripts/fetch_unreal_content.py` to install UE-ready assets (`.uasset`, `.umap`) into `unreal/Content/`.
     - If the dataset provides **source** assets (`.fbx`, `.gltf`, textures), import them through Unreal Editor.
 
 ---
@@ -58,7 +58,7 @@ TongSIM Lite’s Arena system streams **level assets** into the current world us
 
 ### :material-folder-multiple-outline: Recommended content layout
 
-This repo already uses a split between demo and reusable content:
+After `unreal/Content` is downloaded, the project uses a split between demo and reusable content:
 
 - Demo maps: `unreal/Content/Developer/Maps/`
 - Project maps: `unreal/Content/Maps/`
@@ -123,7 +123,7 @@ with TongSim("127.0.0.1:5726") as ts:
 ??? tip "LoadArena fails / returns an empty id"
     - Ensure Unreal is in **Play (PIE)** when using the editor.
     - Confirm `level_asset_path` comes from **Copy Reference** and points to a `UWorld` asset.
-    - Check that the level and its dependencies exist locally (assets may be missing if the dataset was not downloaded).
+    - Check that the level and its dependencies exist locally (run `python scripts/fetch_unreal_content.py` if `unreal/Content` is missing).
 
 ??? tip "Arena loads, but navigation does not work"
     - Build a **NavMesh** for the Arena map (press **P** to visualize).

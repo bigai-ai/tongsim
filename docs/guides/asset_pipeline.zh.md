@@ -11,28 +11,28 @@
 
 ## :material-database: 获取 TongSIM 资产
 
-TongSIM Lite 内置了一部分演示内容；完整的 TongSIM 资产库以独立数据集形式提供：
+TongSIM Lite 的 Unreal 工程资源（`unreal/Content/`）不在 Git 仓库中，请从以下数据集下载：
 
-- :simple-huggingface: 资产库：`https://huggingface.co/datasets/bigai/TongSIM-Asset`
+- :simple-huggingface: Unreal Content 数据集：`https://huggingface.co/datasets/bigai/tongsim-unreal-content`
 
-=== ":material-download: 使用 Git LFS 下载（推荐大文件）"
+=== ":material-script-text: 使用脚本下载（推荐）"
 
     ```bash
-    git lfs install
-    git clone https://huggingface.co/datasets/bigai/TongSIM-Asset
+    python -m pip install -U huggingface_hub
+    python scripts/fetch_unreal_content.py
     ```
 
 === ":material-language-python: 使用 Python 下载（huggingface_hub）"
 
     ```bash
     python -m pip install -U huggingface_hub
-    python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='bigai/TongSIM-Asset', repo_type='dataset', local_dir='TongSIM-Asset', local_dir_use_symlinks=False)"
+    python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='bigai/tongsim-unreal-content', repo_type='dataset', local_dir='tongsim-unreal-content', local_dir_use_symlinks=False)"
     ```
 
 !!! note ":material-information-outline: 导入还是拷贝？"
     具体如何接入取决于资产库提供的格式：
 
-    - 若资产库提供 **UE 可直接使用** 的资源（`.uasset`、`.umap`），将其拷贝到 `unreal/Content/` 后重开工程即可。
+    - 对 TongSIM Lite，运行 `python scripts/fetch_unreal_content.py` 将 UE 资源（`.uasset`、`.umap`）安装到 `unreal/Content/`。
     - 若资产库提供 **源资产**（`.fbx`、`.gltf`、贴图等），请通过 Unreal Editor 的导入流程导入。
 
 ---
@@ -58,7 +58,7 @@ TongSIM Lite 的 Arena 系统使用 `ULevelStreamingDynamic` 将 **关卡资产*
 
 ### :material-folder-multiple-outline: 推荐的目录结构
 
-本仓库已经有较清晰的“演示内容 vs 可复用内容”划分：
+在下载并准备好 `unreal/Content` 后，本仓库使用了较清晰的“演示内容 vs 可复用内容”划分：
 
 - 演示地图：`unreal/Content/Developer/Maps/`
 - 工程地图：`unreal/Content/Maps/`
@@ -123,7 +123,7 @@ with TongSim("127.0.0.1:5726") as ts:
 ??? tip "LoadArena 失败 / 返回空 id"
     - 使用 Editor 时确认已进入 **Play (PIE)**。
     - 确保 `level_asset_path` 通过 **Copy Reference** 获取，并且对应的是 `UWorld` 资产。
-    - 检查资产依赖是否齐全（若未下载资产库，可能缺失资源导致加载失败）。
+    - 检查资产依赖是否齐全（若 `unreal/Content` 缺失，请运行 `python scripts/fetch_unreal_content.py`）。
 
 ??? tip "Arena 加载成功但导航不可用"
     - 为 Arena 地图构建 **NavMesh**（视口按 **P** 可视化）。

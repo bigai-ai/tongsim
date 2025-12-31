@@ -68,7 +68,7 @@ with TongSim("YOUR_SERVER_IP:5726") as ts:
 
 ??? tip "打包程序能运行，但场景/资产缺失"
     - 确认相关资源被 cook 进了 pak。
-    - 使用外部资产时，确保资源位于 `unreal/Content/` 下，并被打包地图引用到。
+    - 使用外部资产时，确保资源位于 `unreal/Content/` 下（先运行 `python scripts/fetch_unreal_content.py` 下载资源），并被打包地图引用到。
 
 ---
 
