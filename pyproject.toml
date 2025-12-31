@@ -63,11 +63,6 @@ name = "tsinghua"
 url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 default = true
 
-[[tool.uv.index]]
-name = "bigai"
-publish-url = "https://nexus.mybigai.ac.cn/repository/pypi-host/"
-url = "https://nexus.mybigai.ac.cn/repository/pypi/simple"
-
 [tool.ruff]
 exclude = [
     "**/tongsim_lite_protobuf/**",  # 把 proto 输出的目录排除
