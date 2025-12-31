@@ -198,10 +198,9 @@ If you use TongSIM in your research, please cite:
 ```bibtex
 @article{sun2025tongsim,
   title={TongSIM: A General Platform for Simulating Intelligent Machines},
-  author={Sun, Zhe and Wu, Kunlun and ... Zhang, Zhenliang},
-  journal={Technical Report},
-  year={2025},
-  institution={State Key Laboratory of General Artificial Intelligence, BIGAI}
+  author={Sun, Zhe and Wu, Kunlun and Fu, Chuanjian and Song, Zeming and Shi, Langyong and Xue, Zihe and Jing, Bohan and Yang, Ying and Gao, Xiaomeng and Li, Aijia and others},
+  journal={arXiv preprint arXiv:2512.20206},
+  year={2025}
 }
 ```
 
