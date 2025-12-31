@@ -3,7 +3,7 @@ Multi-Agent Cooperative Survival & Rivalry (MACS) Environment
 
 This module implements a sophisticated multi-agent reinforcement learning environment
 built on top of TongSim and Unreal Engine. The environment simulates multiple parallel
-arenas where pursuing agents must learn to cooperate in capturing "food" (coins) while
+arenas where pursuing agents must learn to cooperate in capturing coins while
 avoiding "poison" entities.
 
 Key Features:
@@ -47,7 +47,7 @@ class MACS(gym.Env):
 
     This is a complex multi-agent environment based on TongSim and Unreal Engine.
     In multiple parallel arenas, pursuing agents (Pursuers) must learn to cooperate
-    in capturing "food" entities (Coins) while avoiding "poison" entities.
+    in capturing coins while avoiding "poison" entities.
 
     Key Features:
         - Multiple fully independent parallel environment instances (Arenas)
@@ -58,9 +58,9 @@ class MACS(gym.Env):
     Attributes:
         num_arenas (int): Number of parallel arenas running simultaneously.
         n_rescuers (int): Number of pursuing agents per arena.
-        n_supplies (int): Number of food entities (coins) per arena.
+        n_supplies (int): Number of coins per arena.
         n_hazards (int): Number of poison entities per arena.
-        n_coop (int): Minimum number of agents required to cooperatively capture food.
+        n_coop (int): Minimum number of agents required to cooperatively capture coins.
         n_sensors (int): Number of ray sensors per agent.
         sensor_range (float): Maximum detection range of ray sensors.
         agents (List[str]): List of agent identifiers.
@@ -113,9 +113,9 @@ class MACS(gym.Env):
             config: Optional configuration dictionary (currently unused).
             num_arenas (int): Number of parallel arenas to simulate.
             n_rescuers (int): Number of pursuing agents per arena.
-            n_supplies (int): Number of food entities (coins) per arena.
+            n_supplies (int): Number of coins per arena.
             n_hazards (int): Number of poison entities per arena.
-            n_coop (int): Minimum number of agents required to cooperatively capture one food entity.
+            n_coop (int): Minimum number of agents required to cooperatively capture one coin.
             n_sensors (int): Number of ray sensors per agent for perception.
             sensor_range (float): Maximum detection range of ray sensors (in Unreal units).
             pursuer_max_accel (float): Maximum acceleration of pursuing agents (currently unused).
@@ -123,14 +123,14 @@ class MACS(gym.Env):
             hazard_speed (float): Movement speed of poison entities.
             hazard_reward (float): Base reward value for colliding with poison (typically negative).
             supply_reward (float): Base reward value for successfully capturing supply.
-            encounter_reward (float): Reward value for encountering food without successful capture.
+            encounter_reward (float): Reward value for encountering coins without successful capture.
             thrust_penalty (float): Penalty coefficient for agent movement (energy cost).
             local_ratio (float): Ratio of individual reward in final mixed reward calculation.
             speed_features (bool): Whether to include velocity features in observations.
             max_cycles (int): Maximum number of steps per episode.
             render_mode (str, optional): Rendering mode (currently unused).
             env_seed (int): Random seed for environment initialization.
-            steering_strength (float): Strength of random steering for food and poison entities.
+            steering_strength (float): Strength of random steering for coin and poison entities.
 
         Note:
             The environment automatically establishes connection to TongSim server
@@ -998,7 +998,7 @@ class MACS(gym.Env):
                 - List of async movement tasks for all actors
                 - List of reward dictionaries (one per arena) with:
                     - 'control': Movement penalties for each agent
-                    - 'food': Initialized to zero (calculated later)
+                    - 'coin': Initialized to zero (calculated later)
                     - 'poison': Initialized to zero (calculated later)
 
         Note:
@@ -1017,7 +1017,7 @@ class MACS(gym.Env):
             arena_data["hit_poison"] = {}
             rewards_this_arena = {
                 "control": np.zeros(self.n_rescuers),
-                "food": np.zeros(self.n_rescuers),
+                "coin": np.zeros(self.n_rescuers),
                 "poison": np.zeros(self.n_rescuers),
             }
 
@@ -1274,7 +1274,7 @@ class MACS(gym.Env):
         Calculate rewards based on collision settlements and generate respawn tasks.
 
         This method processes all collision events to:
-        1. Assign food and poison rewards to agents
+        1. Assign coin and poison rewards to agents
         2. Update collision flags for observations
         3. Simulate bounce effects for coins and poisons
         4. Create respawn tasks for captured/consumed entities
@@ -1317,12 +1317,12 @@ class MACS(gym.Env):
                     agent_idx = arena_data["ids_of_agents"].index(agent_id)
 
                     # Encounter reward for collision
-                    per_arena_rewards[arena_idx]["food"][agent_idx] += self.encounter_reward_num
+                    per_arena_rewards[arena_idx]["coin"][agent_idx] += self.encounter_reward_num
                     arena_data["hit_coin"][agent_idx] = 1
 
                     # Additional capture reward if threshold met
                     if is_captured:
-                        per_arena_rewards[arena_idx]["food"][agent_idx] += self.supply_reward_num
+                        per_arena_rewards[arena_idx]["coin"][agent_idx] += self.supply_reward_num
 
                 # Simulate coin bounce/struggle regardless of capture
                 old_vel = arena_data["velocities"].get(coin_id, np.zeros(2))
@@ -1368,7 +1368,7 @@ class MACS(gym.Env):
         Args:
             per_arena_rewards (List[Dict]): Accumulated rewards for all arenas containing:
                 - 'control': Movement penalties
-                - 'food': Food capture rewards
+                - 'coin': Coin capture rewards
                 - 'poison': Poison collision penalties
 
         Returns:
@@ -1387,7 +1387,7 @@ class MACS(gym.Env):
         final_rewards_all_arenas = []
         for _arena_idx, rewards_dict in enumerate(per_arena_rewards):
             # Sum all reward components for each agent
-            local_rewards = rewards_dict["control"] + rewards_dict["food"] + rewards_dict["poison"]
+            local_rewards = rewards_dict["control"] + rewards_dict["coin"] + rewards_dict["poison"]
 
             # Calculate global (team) reward as mean of all agents
             global_reward = local_rewards.mean()
