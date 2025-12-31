@@ -93,7 +93,7 @@
     - 兜底方案：手动打开 `/Game/Developer/Maps/L_DemoRL` 后重新运行脚本。
 
 ??? tip "SpawnActor 失败 / 角色不移动"
-    - 确认已拉取 LFS 资源（`git lfs pull`）。
+    - 确认已下载 Unreal Content 资源（`python scripts/fetch_unreal_content.py`）。
     - 关卡需要存在可用 NavMesh（在视口按 **P** 可显示导航网格）。
 
 ---

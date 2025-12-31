@@ -68,7 +68,7 @@ with TongSim("YOUR_SERVER_IP:5726") as ts:
 
 ??? tip "Packaged build runs, but scenes/assets are missing"
     - Confirm the assets are included in the packaging cook.
-    - If you use external assets, ensure they are located under `unreal/Content/` and referenced by packaged maps.
+    - If you use external assets, ensure they are located under `unreal/Content/` (run `python scripts/fetch_unreal_content.py` first) and referenced by packaged maps.
 
 ---
 

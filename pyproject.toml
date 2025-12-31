@@ -11,6 +11,7 @@ requires-python = ">=3.12"
 dependencies = [
     "grpcio>=1.71.0",
     "grpcio-tools>=1.71.0",
+    "huggingface-hub>=1.2.3",
     "pyglm>=2.8.1",
 ]
 
@@ -61,11 +62,6 @@ default-groups = [
 name = "tsinghua"
 url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 default = true
-
-[[tool.uv.index]]
-name = "bigai"
-publish-url = "https://nexus.mybigai.ac.cn/repository/pypi-host/"
-url = "https://nexus.mybigai.ac.cn/repository/pypi/simple"
 
 [tool.ruff]
 exclude = [
