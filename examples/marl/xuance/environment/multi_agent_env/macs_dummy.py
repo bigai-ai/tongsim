@@ -1139,6 +1139,19 @@ class MACS(gym.Env):
                 cur_loc, hit = res["result"]
                 actor_id = res["agent_id"]
 
+                if cur_loc is None:
+                    arena_data = self.arenas_data[arena_idx]
+                    if actor_id in arena_data["ids_of_agents"]:
+                        entity_type = "AGENT"
+                    elif actor_id in arena_data["ids_of_coins"]:
+                        entity_type = "COIN"
+                    elif actor_id in arena_data["ids_of_poisons"]:
+                        entity_type = "POISON"
+                    else:
+                        entity_type = "UNKNOWN"
+                    print(f"[MACS] Warning: {entity_type} {actor_id} in Arena {arena_idx} move failed (timeout).")
+                    continue
+
                 # Update actor position
                 self._update_actor_position(arena_idx, actor_id, cur_loc)
 
