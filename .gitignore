@@ -61,12 +61,4 @@ Saved/
 *.vsconfig
 all.proto.desc
 
-# Unreal Engine project Content assets are hosted externally (Hugging Face)
-unreal/Content/**
-!unreal/Content/
-!unreal/Content/README.md
-
-# Tongsim gRPC deps
-unreal/Plugins/TongSimGrpc/DynamicLibraries/**
-unreal/Plugins/TongSimGrpc/GrpcLibraries/**
-unreal/Plugins/TongSimGrpc/GrpcPrograms/**
+# Unreal scoped ignores live in unreal/.gitignore

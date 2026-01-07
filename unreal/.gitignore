@@ -1,0 +1,68 @@
+# Unreal project scoped ignores
+
+# Ignore all files by default in this folder, but allow directories to be scanned
+*
+!*/
+!/.gitignore
+
+# Keep the uproject in this folder
+!/*.uproject
+
+# Keep key source/config/plugin trees
+!/Source/**
+!/Config/**
+!/Plugins/**
+
+# The project `Content/` directory is distributed separately (not stored in Git)
+!/Content/README.md
+
+# Allow any raw sources from RawContent (managed by LFS typically)
+!/RawContent/**/*
+
+# OS/platform generated files
+ehthumbs.db
+Thumbs.db
+.DS_Store
+.DS_Store?
+.AppleDouble
+.LSOverride
+._*
+*~
+.directory
+
+# Editors
+.vs/
+.vscode/
+.vsconfig
+
+# Unreal transient/build output
+/Intermediate
+/Saved
+/Binaries/**
+/Build/**
+/WindowsNoEditor
+
+# Plugin build outputs
+/Plugins/**/Binaries/**
+/Plugins/**/Intermediate/**
+/Plugins/**/Source/**/obj/**
+/Plugins/**/Source/**/bin/**
+/Plugins/**/Source/**/*.ubtplugin.csproj*
+
+# By default ignore all ProtoGen outputs
+/Plugins/TongSimGrpc/Source/TongSimProto/ThirdParty/ProtoGen/**
+
+# Ignore common backups and tests
+*.bak
+/content/OnlyForTest_WillNotGit/**
+
+# Map build data assets (case-sensitive)
+Content/Maps/*_BuiltData.uasset
+
+# Always keep top-level attributes if present
+!/.gitattributes
+
+# gRPC Library
+/Plugins/TongSimGrpc/GrpcPrograms/**
+/Plugins/TongSimGrpc/GrpcLibraries/**
+/Plugins/TongSimGrpc/DynamicLibraries/**
