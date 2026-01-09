@@ -126,10 +126,10 @@ nav:
       - Task Overview: tutorial/single_agent_nav/task_overview.md
       - Quick Start: tutorial/single_agent_nav/quick_start.md
       - Training: tutorial/single_agent_nav/training.md
-    - Multi-agent RL Navigation:
-      - Task Overview: tutorial/multi_agent_nav/task_overview.md
-      - Quick Start: tutorial/multi_agent_nav/quick_start.md
-      - Training: tutorial/multi_agent_nav/training.md
+    - Multi-agent RL Cooperation:
+      - Task Overview: tutorial/multi_agent_coop/task_overview.md
+      - Quick Start: tutorial/multi_agent_coop/quick_start.md
+      - Training: tutorial/multi_agent_coop/training.md
   - Guides:
       - Asset & Scene Pipeline: guides/asset_pipeline.md
       - Multi-level System: guides/multilevel.md

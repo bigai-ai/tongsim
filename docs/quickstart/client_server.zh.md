@@ -64,9 +64,9 @@ Unreal Engine（TongSIM Lite）                Python（tongsim）
 
 - :material-run-fast: **单智能体 RL 导航** — 面向室内多房间场景的探索与导航任务，提供 Gymnasium 风格环境封装与 Stable-Baselines3 baseline。
   从这里开始：[任务概览](../tutorial/single_agent_nav/task_overview.md)
-- :material-account-group: **多智能体 RL 导航** — 基于轻量化 XuanCe 适配的 MACS 协作任务，强调部分可观测条件下的协同与决策。
-  从这里开始：[任务概览](../tutorial/multi_agent_nav/task_overview.md)
+- :material-account-group: **多智能体 RL 合作** — 基于轻量化 XuanCe 适配的 MACS 协作任务，强调部分可观测条件下的协同与决策。
+  从这里开始：[任务概览](../tutorial/multi_agent_coop/task_overview.md)
 
 ---
 
-**下一步：** [单智能体 RL 导航](../tutorial/single_agent_nav/task_overview.md) · [多智能体 RL 导航](../tutorial/multi_agent_nav/task_overview.md)
+**下一步：** [单智能体 RL 导航](../tutorial/single_agent_nav/task_overview.md) · [多智能体 RL 合作](../tutorial/multi_agent_coop/task_overview.md)

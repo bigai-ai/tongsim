@@ -64,9 +64,9 @@ Once you can run `examples/quickstart_demo.py`, move on to Tutorials:
 
 - :material-run-fast: **Single-agent RL Navigation** — exploration + navigation in multi-room indoor scenes, with Gymnasium-style wrappers and Stable-Baselines3 baselines.
   Start here: [Task Overview](../tutorial/single_agent_nav/task_overview.md)
-- :material-account-group: **Multi-agent RL Navigation** — cooperative multi-agent task (MACS) built on a lightweight adaptation of XuanCe, focusing on coordination under partial observability.
-  Start here: [Task Overview](../tutorial/multi_agent_nav/task_overview.md)
+- :material-account-group: **Multi-agent RL Cooperation** — cooperative multi-agent task (MACS) built on a lightweight adaptation of XuanCe, focusing on coordination under partial observability.
+  Start here: [Task Overview](../tutorial/multi_agent_coop/task_overview.md)
 
 ---
 
-**Next:** [Single-agent RL Navigation](../tutorial/single_agent_nav/task_overview.md) · [Multi-agent RL Navigation](../tutorial/multi_agent_nav/task_overview.md)
+**Next:** [Single-agent RL Navigation](../tutorial/single_agent_nav/task_overview.md) · [Multi-agent RL Cooperation](../tutorial/multi_agent_coop/task_overview.md)

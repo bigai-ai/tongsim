@@ -1,5 +1,3 @@
-# Multi-Agent Navigation with MACS Environment
-
 [![Python Version](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
 [![PyTorch Version](https://img.shields.io/badge/PyTorch-2.8+-ee4c2c.svg)](https://pytorch.org/)
 <!-- [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.txt) -->
