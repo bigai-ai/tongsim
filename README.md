@@ -60,8 +60,12 @@ Use either `uv` (recommended) or plain `pip`.
    uv venv
    uv sync
    ```
+3. Generate protobuf artifacts:
+   ```powershell
+   uv run scripts/generate_pb2.py
+   ```
 
-3. Run examples (start the UE project first; gRPC at `127.0.0.1:5726`):
+4. Run examples (start the UE project first; gRPC at `127.0.0.1:5726`):
    ```powershell
    uv run examples/quickstart_demo.py
    uv run examples/voxel.py
@@ -78,7 +82,11 @@ Use either `uv` (recommended) or plain `pip`.
    pip install pre-commit black ruff mkdocs mkdocs-material mkdocstrings-python mkdocs-static-i18n mkdocs-redirects pytest pytest-asyncio
    pre-commit install
    ```
-3. Run examples (start the UE project first):
+3. Generate protobuf artifacts:
+   ```powershell
+   python scripts/generate_pb2.py
+   ```
+4. Run examples (start the UE project first):
    ```powershell
    python examples\quickstart_demo.py
    python examples\voxel.py

@@ -444,14 +444,17 @@ class CollectTask(gym.Env):
                 width=1,
             )
 
+        # flip vertically so the display matches the world frame (avoid upside-down view)
+        canvas_to_display = pygame.transform.flip(canvas, False, True)
+
         if self.render_mode == "human":
-            self.window.blit(canvas, canvas.get_rect())
+            self.window.blit(canvas_to_display, canvas_to_display.get_rect())
             pygame.event.pump()
             pygame.display.update()
             self.clock.tick(self.metadata["render_fps"])
         else:  # rgb_array
             return np.transpose(
-                np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
+                np.array(pygame.surfarray.pixels3d(canvas_to_display)), axes=(1, 0, 2)
             )
         return None
 
